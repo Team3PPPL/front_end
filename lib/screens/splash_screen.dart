@@ -14,7 +14,7 @@ class SplashScreen extends StatelessWidget {
             children: [
               // LOGO APLIKASI
               AspectRatio(
-                  aspectRatio: 16 / 9, child: Image.asset("assets/logo.jpg")),
+                  aspectRatio: 16 / 9, child: Image.asset("assets/logo.png")),
               const SizedBox(
                 height: 10,
               ),

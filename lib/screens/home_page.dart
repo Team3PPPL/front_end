@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:pppl_apps/constant/appColor.dart';
+import 'package:pppl_apps/components/all_data_students_ui.dart';
+import 'package:pppl_apps/components/split_data_students_ui.dart';
 import 'package:pppl_apps/constant/appFont.dart';
 
 class HomePage extends StatefulWidget {
@@ -25,7 +26,7 @@ class _HomePageState extends State<HomePage> {
                 width: MediaQuery.of(context).size.width / 2.8,
                 decoration: BoxDecoration(
                     border: Border.all(color: Colors.black),
-                    borderRadius: BorderRadius.circular(15)),
+                    borderRadius: BorderRadius.circular(10)),
                 child: Padding(
                   padding: const EdgeInsets.all(8),
                   child: Text(
@@ -39,90 +40,17 @@ class _HomePageState extends State<HomePage> {
           const SizedBox(height: 15),
 
           // FIELD JUMLAH SISWA
-          Container(
-            height: MediaQuery.of(context).size.height / 10,
-            decoration: BoxDecoration(
-                border: Border.all(color: Colors.black),
-                borderRadius: BorderRadius.circular(15)),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "Total Siswa",
-                  style: titleFonts,
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Text(
-                  "246",
-                  style: titleFonts,
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 20),
-          IntrinsicHeight(
-            child: Container(
-              decoration: BoxDecoration(
-                  border: Border.all(color: Colors.black),
-                  borderRadius: BorderRadius.circular(15)),
-              child: Padding(
-                padding: const EdgeInsets.all(8),
-                child: Row(
-                  children: [
-                    // FIELD JUMLAH SISWA LAKI-LAKI
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Siswa Laki-Laki",
-                            style: titleFonts,
-                          ),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          Text(
-                            "100",
-                            style: titleFonts,
-                          ),
-                        ],
-                      ),
-                    ),
-                    const VerticalDivider(
-                      color: universalColors,
-                      thickness: 2,
-                      indent: 5,
-                      endIndent: 5,
-                    ),
+          AllDataStudentsUI(totalSiswa: 246),
 
-                    // FIELD JUMLAH SISWA PEREMPUAN
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Siswa Perempuan",
-                            style: titleFonts,
-                          ),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          Text(
-                            "146",
-                            style: titleFonts,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+          const SizedBox(height: 20),
+
+          // FIELD JUMLAH SISWA BERDASARKAN JENIS KELAMIN
+          SplitDataStudentsUI(
+            jmlhSiswaLaki: 100,
+            jmlhSiswaPr: 146,
           ),
-          // ignore: prefer_const_constructors
-          SizedBox(
+
+          const SizedBox(
             height: 50,
           ),
 
@@ -133,7 +61,7 @@ class _HomePageState extends State<HomePage> {
                 width: MediaQuery.of(context).size.width / 1.8,
                 decoration: BoxDecoration(
                     border: Border.all(color: Colors.black),
-                    borderRadius: BorderRadius.circular(15)),
+                    borderRadius: BorderRadius.circular(10)),
                 child: Padding(
                   padding: const EdgeInsets.all(8),
                   child: Text(
