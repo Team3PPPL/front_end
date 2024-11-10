@@ -1,5 +1,6 @@
 import 'package:pppl_apps/model/rekap_model.dart';
 
+// LIST REKAP DATA LEMBAGA
 List<RekapModel> rekapLembaga = [
   RekapModel(keteranganRekap: "NSM", detailRekap: 111232010193),
   RekapModel(keteranganRekap: "NPSN", detailRekap: 60706599),
@@ -15,6 +16,7 @@ List<RekapModel> rekapLembaga = [
   RekapModel(keteranganRekap: "Provinsi", detailRekap: "JAWA BARAT"),
 ];
 
+// LIST REKAP DATA SISWA
 List<RekapModel> rekapSiswa = [
   RekapModel(keteranganRekap: "Jumlah SIswa", detailRekap: 424),
   RekapModel(keteranganRekap: "Jumlah Rombel", detailRekap: 15),
@@ -25,6 +27,7 @@ List<RekapModel> rekapSiswa = [
   RekapModel(keteranganRekap: "Jurusan Agama", detailRekap: 0),
 ];
 
+// LIST REKAP DATA PTK
 List<RekapModel> rekapPTK = [
   RekapModel(keteranganRekap: "Jumlah Personil", detailRekap: 13),
   RekapModel(keteranganRekap: "Jumlah Guru", detailRekap: 13),

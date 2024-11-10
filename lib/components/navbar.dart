@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:pppl_apps/constant/appColor.dart';
 import 'package:pppl_apps/constant/appFont.dart';
 import 'package:pppl_apps/screens/home_page.dart';
-import 'package:pppl_apps/screens/income_page.dart';
-import 'package:pppl_apps/screens/outcome_page.dart';
+import 'package:pppl_apps/screens/cash%20in/income_page.dart';
+import 'package:pppl_apps/screens/cash%20out/outcome_page.dart';
 import 'package:pppl_apps/screens/profile_page.dart';
 import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
 
@@ -20,8 +20,8 @@ class _NavBarState extends State<NavBar> {
 
   List bodyPage = [
     const HomePage(),
-    const OutcomePage(),
     const IncomePage(),
+    const OutcomePage(),
     const ProfilePage(),
   ];
 
@@ -31,7 +31,7 @@ class _NavBarState extends State<NavBar> {
         backgroundColor: const Color(0xffF3F3F3),
         body: bodyPage[selectedPage],
         bottomNavigationBar: StylishBottomBar(
-          backgroundColor: universalColors,
+          backgroundColor: componentColors,
           currentIndex: selectedPage,
           option: AnimatedBarOptions(
               iconSize: 35, padding: const EdgeInsets.symmetric(vertical: 5)),
@@ -42,26 +42,42 @@ class _NavBarState extends State<NavBar> {
                     : const Icon(Icons.home_outlined),
                 title: Text(
                   "Home",
-                  style: componentFonts,
+                  style: selectedPage == 0
+                      ? whiteComponentFonts
+                      : unselectedComponentFonts,
                 ),
                 selectedColor: Colors.white),
             BottomBarItem(
-                icon: const Icon(CupertinoIcons.sort_up_circle),
-                title: Text("Cash Out", style: componentFonts),
+                icon: selectedPage == 1
+                    ? const Icon(CupertinoIcons.arrow_down_square_fill)
+                    : const Icon(CupertinoIcons.arrow_down_square),
+                title: Text("Cash In",
+                    style: selectedPage == 1
+                        ? whiteComponentFonts
+                        : unselectedComponentFonts),
                 selectedColor: Colors.white),
             BottomBarItem(
-                icon: const Icon(CupertinoIcons.arrow_down_square),
-                title: Text("Cash In", style: componentFonts),
+                icon: selectedPage == 2
+                    ? const Icon(CupertinoIcons.arrow_up_square_fill)
+                    : const Icon(CupertinoIcons.arrow_up_square),
+                title: Text("Cash Out",
+                    style: selectedPage == 2
+                        ? whiteComponentFonts
+                        : unselectedComponentFonts),
                 selectedColor: Colors.white),
             BottomBarItem(
-                icon: const Icon(CupertinoIcons.profile_circled),
-                title: Text("Profile", style: componentFonts),
+                icon: selectedPage == 3
+                    ? const Icon(CupertinoIcons.person_crop_circle_fill)
+                    : const Icon(CupertinoIcons.person_crop_circle),
+                title: Text("Profile",
+                    style: selectedPage == 3
+                        ? whiteComponentFonts
+                        : unselectedComponentFonts),
                 selectedColor: Colors.white),
           ],
           onTap: (index) {
             setState(() {
               selectedPage = index;
-              // selectedNavbar = false;
             });
           },
         ));

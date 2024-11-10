@@ -17,87 +17,86 @@ class _SplitDataStudentsUIState extends State<SplitDataStudentsUI> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height / 13,
+      width: double.infinity,
       decoration: BoxDecoration(
           border: Border.all(color: Colors.black),
           borderRadius: BorderRadius.circular(10)),
       child: IntrinsicHeight(
-        // OBJECT ABSTRACT 2
+        // OBJECT ABSTRACT 2 KIRI ATAS
         child: Stack(
           children: [
-            ClipRRect(
-              borderRadius:
-                  const BorderRadius.only(topLeft: Radius.circular(10)),
-              child: Align(
-                alignment: Alignment.topLeft,
+            Positioned(
+              top: 0,
+              left: 0,
+              child: ClipRRect(
+                borderRadius:
+                    const BorderRadius.only(topLeft: Radius.circular(10)),
                 child: Image.asset(
                   "assets/object2.png",
-                  height: MediaQuery.of(context).size.height / 30,
+                  height: MediaQuery.of(context).size.height / 25,
                 ),
               ),
             ),
-            ClipRRect(
-              borderRadius:
-                  const BorderRadius.only(bottomRight: Radius.circular(10)),
-              child: RotationTransition(
-                turns: const AlwaysStoppedAnimation(180 / 360),
-                child: Align(
-                  alignment: Alignment.topLeft,
-                  child: Image.asset(
-                    "assets/object2.png",
-                    height: MediaQuery.of(context).size.height / 30,
+
+            // OBJECT ABSTRACT 2 KANAN BAWAH
+            RotationTransition(
+              turns: const AlwaysStoppedAnimation(180 / 360),
+              child: Align(
+                alignment: Alignment.topLeft,
+                child: ClipRRect(
+                  borderRadius:
+                      const BorderRadius.only(bottomRight: Radius.circular(10)),
+                  child: ClipRRect(
+                    borderRadius:
+                        const BorderRadius.only(topLeft: Radius.circular(10)),
+                    child: Image.asset(
+                      "assets/object2.png",
+                      height: MediaQuery.of(context).size.height / 25,
+                    ),
                   ),
                 ),
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
               child: Row(
                 children: [
-                  // FIELD JUMLAH SISWA LAKI-LAKI
+                  // CONTAINER JUMLAH SISWA LAKI-LAKI
                   Expanded(
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
-                          "Siswa Laki-Laki",
-                          style: titleFonts,
-                        ),
+                        Text("Siswa Laki-Laki",
+                            style: titleFonts, textAlign: TextAlign.center),
                         const SizedBox(
                           height: 5,
                         ),
-                        Text(
-                          "${widget.jmlhSiswaLaki}",
-                          style: titleFonts,
-                        ),
+                        Text("${widget.jmlhSiswaLaki}",
+                            style: titleFonts, textAlign: TextAlign.center),
                       ],
                     ),
                   ),
 
-                  // GARIS PEMBATAS SECARA VERTIKAL (HARUS MENGGUNAKAN INTRINSICHEIGHT)
+                  // GARIS PEMBATAS SECARA VERTIKAL (HARUS MENGGUNAKAN WIDGET INTRINSICHEIGHT)
                   const VerticalDivider(
-                    color: universalColors,
+                    color: componentColors,
                     thickness: 2,
                     indent: 5,
                     endIndent: 5,
                   ),
 
-                  // FIELD JUMLAH SISWA PEREMPUAN
+                  // CONTAINER JUMLAH SISWA PEREMPUAN
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text(
-                          "Siswa Perempuan",
-                          style: titleFonts,
-                        ),
+                        Text("Siswa Perempuan",
+                            style: titleFonts, textAlign: TextAlign.center),
                         const SizedBox(
                           height: 5,
                         ),
-                        Text(
-                          "${widget.jmlhSiswaPr}",
-                          style: titleFonts,
-                        ),
+                        Text("${widget.jmlhSiswaPr}",
+                            style: titleFonts, textAlign: TextAlign.center),
                       ],
                     ),
                   ),
