@@ -1,4 +1,4 @@
-import 'package:pppl_apps/model/rekap_model.dart';
+import 'package:pppl_apps/models/rekap_model.dart';
 
 // LIST REKAP DATA LEMBAGA
 List<RekapModel> rekapLembaga = [
@@ -18,7 +18,7 @@ List<RekapModel> rekapLembaga = [
 
 // LIST REKAP DATA SISWA
 List<RekapModel> rekapSiswa = [
-  RekapModel(keteranganRekap: "Jumlah SIswa", detailRekap: 424),
+  RekapModel(keteranganRekap: "Jumlah Siswa", detailRekap: 424),
   RekapModel(keteranganRekap: "Jumlah Rombel", detailRekap: 15),
   RekapModel(keteranganRekap: "Siswa Berkebutuhan Khusus", detailRekap: 0),
   RekapModel(keteranganRekap: "Jurusan IPA", detailRekap: 0),

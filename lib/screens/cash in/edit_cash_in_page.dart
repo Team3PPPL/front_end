@@ -5,16 +5,18 @@ import 'package:intl/intl.dart';
 import 'package:pppl_apps/constant/appColor.dart';
 import 'package:pppl_apps/constant/appFont.dart';
 import 'package:pppl_apps/components/format_currency_controller.dart';
+import 'package:pppl_apps/models/pemasukan_model.dart';
 import 'package:pppl_apps/services/pemasukan_services.dart';
 
-class CashInPage extends StatefulWidget {
-  const CashInPage({super.key});
+class EditCashInPage extends StatefulWidget {
+  PemasukanModel pemasukanModel;
+  EditCashInPage({super.key, required this.pemasukanModel});
 
   @override
-  State<CashInPage> createState() => _CashInPageState();
+  State<EditCashInPage> createState() => _EditCashInPageState();
 }
 
-class _CashInPageState extends State<CashInPage> {
+class _EditCashInPageState extends State<EditCashInPage> {
   TextEditingController danaBosController = TextEditingController();
   TextEditingController kelas1Controller = TextEditingController();
   TextEditingController kelas2Controller = TextEditingController();
@@ -23,7 +25,7 @@ class _CashInPageState extends State<CashInPage> {
   TextEditingController kelas5Controller = TextEditingController();
   TextEditingController kelas6Controller = TextEditingController();
   TextEditingController tanggalController = TextEditingController();
-  String hintTanggal = "--";
+  String hintTanggal = '--';
   List<TextEditingController> inputUser = [];
 
   @override
@@ -37,13 +39,40 @@ class _CashInPageState extends State<CashInPage> {
       kelas5Controller,
       kelas6Controller
     ];
+
     danaBosController
         .addListener(() => formatCurrencyController(danaBosController));
-
     for (var controller in inputUser) {
       controller.addListener(() => formatCurrencyController(controller));
     }
+
     initializeDateFormatting("id_ID", null);
+    fetchDataAkhir();
+  }
+
+  // FUNCTION UNTUK MENDAPATKAN DATA TERAKHIR BERDASARKAN DATA YANG DIPILIH PADA HALAMAN UTAMA
+  Future<void> fetchDataAkhir() async {
+    try {
+      final allData = await PemasukanServices().getAllDataPemasukan();
+      final getData = widget.pemasukanModel;
+
+      if (allData.isNotEmpty) {
+        setState(() {
+          int id = getData.id;
+          danaBosController.text = getData.bos.toString();
+          inputUser[0].text = getData.kelas1.toString();
+          inputUser[1].text = getData.kelas2.toString();
+          inputUser[2].text = getData.kelas3.toString();
+          inputUser[3].text = getData.kelas4.toString();
+          inputUser[4].text = getData.kelas5.toString();
+          inputUser[5].text = getData.kelas6.toString();
+          tanggalController.text = DateFormat("d MMMM yyyy", "id_ID")
+              .format(getData.tanggalPemasukan);
+        });
+      }
+    } catch (e) {
+      throw Exception("Error: $e");
+    }
   }
 
   // FUNCTION UNTUK MEMILIH TANGGAL MELALUI KALENDER
@@ -70,7 +99,7 @@ class _CashInPageState extends State<CashInPage> {
         appBar: AppBar(
           backgroundColor: componentColors,
           title: Text(
-            "PEMASUKAN",
+            "EDIT PEMASUKAN PERIODE",
             style: whiteTitleFonts,
           ),
           centerTitle: true,
@@ -96,6 +125,7 @@ class _CashInPageState extends State<CashInPage> {
             child: Padding(
               padding: const EdgeInsets.all(20),
               child:
+
                   // CONTAINER YANG BERISIKAN ITEM PEMASUKAN
                   ListView(
                 children: [
@@ -327,7 +357,6 @@ class _CashInPageState extends State<CashInPage> {
                                   style: boldComponentFonts,
                                   readOnly: true,
                                   maxLines: 2,
-                                  textAlign: TextAlign.center,
                                   decoration: InputDecoration(
                                       isDense: true,
                                       hintText: hintTanggal,
@@ -387,8 +416,9 @@ class _CashInPageState extends State<CashInPage> {
                                 DateFormat("d MMMM yyyy", "id_ID")
                                     .parse(tanggalController.text);
 
-                            // MEMANGGIL METHOD addNewDataPemasukan() UNTUK MENGINPUT DATA KE SERVER
-                            await PemasukanServices().addNewDataPemasukan(
+                            // MEMANGGIL METHOD updateDataPemasukan() UNTUK MEMPERBARUI DATA KE SERVER
+                            await PemasukanServices().updateDataPemasukan(
+                              widget.pemasukanModel.id,
                               konversiDanaBos,
                               getKonversiKelas[0],
                               getKonversiKelas[1],
@@ -398,12 +428,11 @@ class _CashInPageState extends State<CashInPage> {
                               getKonversiKelas[5],
                               konversiTanggalPemasukan,
                             );
-
                             Get.back(result: true);
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 backgroundColor: universalColors,
-                                content: Text("DATA BERHASIL DITAMBAHKAN",
+                                content: Text("DATA BERHASIL DIUPDATE",
                                     style: boldComponentFonts),
                                 duration: const Duration(seconds: 3),
                               ),

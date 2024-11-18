@@ -4,25 +4,8 @@ import 'package:pppl_apps/constant/about_us_content.dart';
 import 'package:pppl_apps/constant/appColor.dart';
 import 'package:pppl_apps/constant/appFont.dart';
 
-class ProfilePage extends StatefulWidget {
+class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
-
-  @override
-  State<ProfilePage> createState() => _ProfilePageState();
-}
-
-class _ProfilePageState extends State<ProfilePage> {
-  String pathImage = "assets/logo.png";
-
-  @override
-  void initState() {
-    loadImage();
-    super.initState();
-  }
-
-  Future<void> loadImage() async {
-    await precacheImage(AssetImage(pathImage), context);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +24,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         AspectRatio(
                             aspectRatio: 16 / 5.5,
                             child: Image.asset(
-                              pathImage,
+                              "assets/logo2.png",
                               fit: BoxFit.contain,
                             ))),
 

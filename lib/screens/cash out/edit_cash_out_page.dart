@@ -5,21 +5,21 @@ import 'package:intl/intl.dart';
 import 'package:pppl_apps/constant/appColor.dart';
 import 'package:pppl_apps/constant/appFont.dart';
 import 'package:pppl_apps/components/format_currency_controller.dart';
+import 'package:pppl_apps/models/pengeluaran_model.dart';
 import 'package:pppl_apps/constant/list_pengeluaran.dart' as getPengeluaran;
-import 'package:pppl_apps/services/pengeluaran_service.dart';
 
-class CashOutPage extends StatefulWidget {
-  const CashOutPage({super.key});
+class EditCashOutPage extends StatefulWidget {
+  PengeluaranModel pengeluaranModel;
+  EditCashOutPage({super.key, required this.pengeluaranModel});
 
   @override
-  State<CashOutPage> createState() => _CashOutPageState();
+  State<EditCashOutPage> createState() => _EditCashOutPageState();
 }
 
-class _CashOutPageState extends State<CashOutPage> {
+class _EditCashOutPageState extends State<EditCashOutPage> {
   TextEditingController pengeluaranController = TextEditingController();
   TextEditingController tanggalController = TextEditingController();
   String? selectedItem;
-  String? selectedItem2;
   String hintTanggal = "--";
 
   @override
@@ -31,7 +31,6 @@ class _CashOutPageState extends State<CashOutPage> {
     initializeDateFormatting("id_ID", null);
   }
 
-  // FUNCTION UNTUK MEMILIH TANGGAL MELALUI KALENDER
   Future<void> selectDate() async {
     DateTime? setDate = await showDatePicker(
       context: context,
@@ -296,36 +295,19 @@ class _CashOutPageState extends State<CashOutPage> {
                           )),
                         ),
                       ),
-                      onTap: () async {
-                        try {
-                          // MELAKUKAN KONVERSI TERHADAP DATA BOS YANG AWALNYA STRING MENJADI INTEGER
-                          int konversiPengeluaranController = int.parse(
-                              pengeluaranController.text.replaceAll('.', ''));
-
-                          // MELAKUKAN KONVERSI TANGGAL DARI STRING MENJADI DATETIME
-                          DateTime konversiTanggalPemasukan =
-                              DateFormat("d MMMM yyyy", "id_ID")
-                                  .parse(tanggalController.text);
-
-                          // MEMANGGIL METHOD addNewDataPengeluaran() UNTUK MENGINPUT DATA KE SERVER
-                          await PengeluaranServices().addNewDataPengeluaran(
-                              konversiPengeluaranController,
-                              konversiTanggalPemasukan);
-
-                          Get.back(result: true);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              backgroundColor: universalColors,
-                              content: Text("DATA BERHASIL DITAMBAHKAN",
-                                  style: boldComponentFonts),
-                              duration: const Duration(seconds: 3),
-                            ),
-                          );
-                        } catch (e) {
-                          print("Error: $e");
-                        } finally {
-                          Get.back();
-                        }
+                      onTap: () {
+                        print(selectedItem);
+                        print(pengeluaranController.text);
+                        print(tanggalController.text);
+                        Get.back();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            backgroundColor: universalColors,
+                            content: Text("DATA BERHASIL DISIMPAN",
+                                style: universalFonts),
+                            duration: const Duration(seconds: 3),
+                          ),
+                        );
                       },
                     )
                   ],

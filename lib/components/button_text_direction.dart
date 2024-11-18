@@ -3,7 +3,8 @@ import 'package:get/get.dart';
 import 'package:pppl_apps/constant/appColor.dart';
 import 'package:pppl_apps/constant/appFont.dart';
 
-buttonDirection(String jenisButton, dynamic direction, context) {
+buttonDirection(
+    String jenisButton, dynamic direction, Function refreshData, context) {
   return Align(
     alignment: Alignment.bottomCenter,
     child: GestureDetector(
@@ -18,8 +19,12 @@ buttonDirection(String jenisButton, dynamic direction, context) {
           style: whiteComponentFonts,
         )),
       ),
-      onTap: () {
-        Get.to(direction);
+      onTap: () async {
+        Get.to(direction)!.then((result) {
+          if (result == true) {
+            refreshData();
+          }
+        });
       },
     ),
   );

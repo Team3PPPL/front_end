@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-// FONT TITLE
+// TITLE FONTS
 final titleFonts = GoogleFonts.lato(fontSize: 20, fontWeight: FontWeight.bold);
 final whiteTitleFonts = GoogleFonts.lato(
     fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white);
 
-// FONT UNIVERSAL
+// UNIVERSAL FONTS
 final universalFonts = GoogleFonts.lato(fontSize: 15, color: Colors.black);
 final smallUniversalFonts = GoogleFonts.lato(fontSize: 13, color: Colors.black);
 final whiteUniversalFonts = GoogleFonts.lato(fontSize: 15, color: Colors.white);
+
+// COMPONENT FONTS
 final blackComponentFonts =
     GoogleFonts.openSans(fontSize: 15, color: Colors.black);
-
-// FONT COMPONENT
 final whiteComponentFonts =
     GoogleFonts.openSans(fontSize: 15, color: Colors.white);
 final boldComponentFonts = GoogleFonts.openSans(

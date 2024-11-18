@@ -17,7 +17,6 @@ class NavBar extends StatefulWidget {
 
 class _NavBarState extends State<NavBar> {
   int selectedPage = 0;
-
   List bodyPage = [
     const HomePage(),
     const IncomePage(),
@@ -28,7 +27,7 @@ class _NavBarState extends State<NavBar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: const Color(0xffF3F3F3),
+        backgroundColor: Colors.white,
         body: bodyPage[selectedPage],
         bottomNavigationBar: StylishBottomBar(
           backgroundColor: componentColors,
