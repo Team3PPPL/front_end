@@ -1,9 +1,9 @@
 class TotalPemasukanModel {
-  String totalAllIds;
+  int totalPemasukan;
 
-  TotalPemasukanModel({required this.totalAllIds});
+  TotalPemasukanModel({required this.totalPemasukan});
 
   factory TotalPemasukanModel.fromJson(Map<String, dynamic> json) {
-    return TotalPemasukanModel(totalAllIds: json["totalAllIds"]);
+    return TotalPemasukanModel(totalPemasukan: json["totalPemasukan"]);
   }
 }

@@ -27,8 +27,12 @@ class _NavBarState extends State<NavBar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.white,
-        body: bodyPage[selectedPage],
+        backgroundColor:
+            Colors.white, // MEMBERIKAN WARNA BACKGROUND PADA SETIAP HALAMAN
+        body: bodyPage[
+            selectedPage], // MENAMPILKAN HALAMAN SESUAI DEGAN INDEX YANG SEDANG DIINTAI OLEH SELECTED PAGE
+
+        // MEMBUAT BOTTOM NAVIGATION BAR DENGAN STYLISH BOTTOM BAR
         bottomNavigationBar: StylishBottomBar(
           backgroundColor: componentColors,
           currentIndex: selectedPage,

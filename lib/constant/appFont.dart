@@ -5,6 +5,8 @@ import 'package:google_fonts/google_fonts.dart';
 final titleFonts = GoogleFonts.lato(fontSize: 20, fontWeight: FontWeight.bold);
 final whiteTitleFonts = GoogleFonts.lato(
     fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white);
+final smallWhiteTitleFonts = GoogleFonts.lato(
+    fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white);
 
 // UNIVERSAL FONTS
 final universalFonts = GoogleFonts.lato(fontSize: 15, color: Colors.black);

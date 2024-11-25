@@ -72,10 +72,10 @@ buttonControlDelete(
                     Get.back();
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        backgroundColor: universalColors,
+                        backgroundColor: componentColors,
                         content: Text(
                           "DATA BERHASIL DIHAPUS",
-                          style: boldComponentFonts,
+                          style: whiteBoldComponentFonts,
                         ),
                         duration: const Duration(seconds: 3),
                       ),

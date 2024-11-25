@@ -1,25 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:pppl_apps/components/button_control_delete.dart';
 import 'package:pppl_apps/components/button_controller_direction.dart';
 import 'package:pppl_apps/components/button_text_direction.dart';
 import 'package:pppl_apps/components/format_currency_string.dart';
 import 'package:pppl_apps/constant/appColor.dart';
 import 'package:pppl_apps/constant/appFont.dart';
 import 'package:pppl_apps/models/pengeluaran_model.dart';
-import 'package:pppl_apps/screens/cash%20out/input_dacade_pengeluaran.dart';
-import 'package:pppl_apps/screens/cash%20out/list_pengeluaran_in_decade_page.dart';
+import 'package:pppl_apps/screens/cash%20out/cash_out_page.dart';
+import 'package:pppl_apps/screens/cash%20out/edit_cash_out_page.dart';
 import 'package:pppl_apps/services/pengeluaran_service.dart';
 import 'package:pppl_apps/services/total_pengeluaran_service.dart';
 
-class OutcomePage extends StatefulWidget {
-  const OutcomePage({super.key});
+class ListsPengeluaranInDecadePage extends StatefulWidget {
+  PengeluaranModel pengeluaranModel;
+  ListsPengeluaranInDecadePage({super.key, required this.pengeluaranModel});
 
   @override
-  State<OutcomePage> createState() => _OutcomePageState();
+  State<ListsPengeluaranInDecadePage> createState() =>
+      _ListsPengeluaranInDecadePageState();
 }
 
-class _OutcomePageState extends State<OutcomePage> {
+class _ListsPengeluaranInDecadePageState
+    extends State<ListsPengeluaranInDecadePage> {
   late Future<List<PengeluaranModel>> newDataPengeluaran;
   late Future<Map<String, dynamic>> newDataTotal;
   final PengeluaranServices pengeluaranServices = PengeluaranServices();
@@ -30,23 +31,20 @@ class _OutcomePageState extends State<OutcomePage> {
   void initState() {
     super.initState();
     newDataPengeluaran = pengeluaranServices.getAllDataPengeluaran();
-    newDataTotal = totalPengeluaranService.getAllDataTotalPengeluaran();
+    newDataTotal = totalPengeluaranService
+        .getAllDataTotalPengeluaranInDecade(widget.pengeluaranModel.id);
   }
 
   // FUNCTION UNTUK MEMPERBARUI DATA SETIAP ADA PERUBAHAN YANG TERJADI
   void refreshData() async {
     await PengeluaranServices().getAllDataPengeluaran();
-    await TotalPengeluaranService().getAllDataTotalPengeluaran();
+    await TotalPengeluaranService()
+        .getAllDataTotalPengeluaranInDecade(widget.pengeluaranModel.id);
     setState(() {
       newDataPengeluaran = pengeluaranServices.getAllDataPengeluaran();
-      newDataTotal = totalPengeluaranService.getAllDataTotalPengeluaran();
+      newDataTotal = totalPengeluaranService
+          .getAllDataTotalPengeluaranInDecade(widget.pengeluaranModel.id);
     });
-  }
-
-  // FUNCTION UNTUK MELAKUKAN FORMAT TERHADAP TANGGAL
-  String formatDate(DateTime date) {
-    final dateFormat = DateFormat("d MMMM yyyy", "id_ID").format(date);
-    return dateFormat;
   }
 
   @override
@@ -54,14 +52,37 @@ class _OutcomePageState extends State<OutcomePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: componentColors,
-        title: Text(
-          "PENGELUARAN",
-          style: whiteTitleFonts,
+        title: Column(
+          children: [
+            Text(
+              "DATA PENGELUARAN PERIODE",
+              style: whiteTitleFonts,
+            ),
+            Text(
+              "${widget.pengeluaranModel.decade.year} / ${widget.pengeluaranModel.decade.year + 1}",
+              style: smallWhiteTitleFonts,
+            ),
+          ],
         ),
         centerTitle: true,
+        leading: const Icon(
+          Icons.keyboard_arrow_left_rounded,
+          size: 35,
+        ),
+        iconTheme: const IconThemeData(color: Colors.white),
+        actions: [
+          // TOMBOL UNTUK MENCETAK DATA PEMASUKAN DALAM BENTUK PDF
+          IconButton(
+              icon: const Icon(Icons.print),
+              onPressed: () async {
+                print(widget.pengeluaranModel.id);
+                await PengeluaranServices()
+                    .printData(widget.pengeluaranModel.id);
+              })
+        ],
       ),
       body:
-          // BASE DETAIL PENGELUARAN
+          // BASE LIST PENGELUARAN
           Column(
         children: [
           Padding(
@@ -146,28 +167,28 @@ class _OutcomePageState extends State<OutcomePage> {
                                           ),
                                           Row(
                                             children: [
-                                              // BUTTON HAPUS SELURUH DATA PENGELUARAN BERDASARKAN DECADE
-                                              buttonControlDelete(
-                                                  Icons.delete_forever,
-                                                  () async =>
-                                                      await PengeluaranServices()
-                                                          .deleteAllDataPengeluaranInDecade(
-                                                              getData.id),
-                                                  refreshData,
+                                              // BUTTON DETAIL DATA PEMASUKAN BERDASARKAN INDEX
+                                              buttonControlDirection(
+                                                  Icons.edit,
+                                                  EditCashOutPage(
+                                                      pengeluaranModel:
+                                                          getData),
+                                                  () => refreshData(),
                                                   context),
 
                                               const SizedBox(
                                                 width: 10,
                                               ),
 
-                                              // BUTTON DETAIL DATA PEMASUKAN BERDASARKAN INDEX
-                                              buttonControlDirection(
-                                                  Icons.info_outline,
-                                                  ListsPengeluaranInDecadePage(
-                                                      pengeluaranModel:
-                                                          getData),
-                                                  () => refreshData(),
-                                                  context),
+                                              // BUTTON HAPUS SELURUH DATA PENGELUARAN BERDASARKAN DECADE
+                                              // buttonControlDelete(
+                                              //     Icons.delete_forever,
+                                              //     () async =>
+                                              //         await PengeluaranServices()
+                                              //             .deleteAllDataPengeluaranInDecade(
+                                              //                 getData.id),
+                                              //     refreshData,
+                                              //     context),
                                             ],
                                           ),
                                         ],
@@ -185,8 +206,8 @@ class _OutcomePageState extends State<OutcomePage> {
                       })),
 
           // BUTTON UNTUK MENGINPUT DATA PENGELUARAN
-          buttonDirection("Cash Out", const InputDecadePengeluaranPage(),
-              () => refreshData(), context)
+          buttonDirection(
+              "Cash Out", const CashOutPage(), () => refreshData(), context)
         ],
       ),
       bottomSheet: FutureBuilder(

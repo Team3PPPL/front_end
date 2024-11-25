@@ -22,7 +22,6 @@ buttonPrint(Function apiMethod, context) {
         ),
       ),
       onTap: () async {
-        print("Telah menekan button");
         await apiMethod();
       });
 }

@@ -7,6 +7,7 @@ import 'package:pppl_apps/constant/appFont.dart';
 import 'package:pppl_apps/components/format_currency_controller.dart';
 import 'package:pppl_apps/models/pengeluaran_model.dart';
 import 'package:pppl_apps/constant/list_pengeluaran.dart' as getPengeluaran;
+import 'package:pppl_apps/services/pengeluaran_service.dart';
 
 class EditCashOutPage extends StatefulWidget {
   PengeluaranModel pengeluaranModel;
@@ -21,16 +22,18 @@ class _EditCashOutPageState extends State<EditCashOutPage> {
   TextEditingController tanggalController = TextEditingController();
   String? selectedItem;
   String hintTanggal = "--";
+  String hintText = "Halo";
 
   @override
   void initState() {
     super.initState();
-
     pengeluaranController
         .addListener(() => formatCurrencyController(pengeluaranController));
     initializeDateFormatting("id_ID", null);
+    fetchDataAkhir();
   }
 
+  // FUNCTION UNTUK MEMILIH TANGGAL MELALUI KALENDER
   Future<void> selectDate() async {
     DateTime? setDate = await showDatePicker(
       context: context,
@@ -43,6 +46,21 @@ class _EditCashOutPageState extends State<EditCashOutPage> {
       setState(() {
         hintTanggal = DateFormat("d MMMM yyyy", "id_ID").format(setDate);
       });
+    }
+  }
+
+  // FUNCTION UNTUK MENDAPATKAN DATA TERAKHIR BERDASARKAN DATA YANG DIPILIH PADA HALAMAN UTAMA
+  Future<void> fetchDataAkhir() async {
+    try {
+      final allData = await PengeluaranServices()
+          .getAllDataDecadePengeluaran(widget.pengeluaranModel.id);
+      final getData = widget.pengeluaranModel;
+
+      if (allData.isEmpty) {
+        tanggalController.text = "${getData.cashouts["createdAt"]}";
+      }
+    } catch (e) {
+      throw Exception("Error: $e");
     }
   }
 
@@ -123,7 +141,7 @@ class _EditCashOutPageState extends State<EditCashOutPage> {
                                 menuWidth:
                                     MediaQuery.of(context).size.width / 1.19,
                                 hint: Text(
-                                  "JENIS PENGELUARAN",
+                                  hintText,
                                   style: boldComponentFonts,
                                   textAlign: TextAlign.center,
                                 ),

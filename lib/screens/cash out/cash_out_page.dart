@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:pppl_apps/constant/appColor.dart';
 import 'package:pppl_apps/constant/appFont.dart';
 import 'package:pppl_apps/components/format_currency_controller.dart';
 import 'package:pppl_apps/constant/list_pengeluaran.dart' as getPengeluaran;
-import 'package:pppl_apps/services/pengeluaran_service.dart';
 
 class CashOutPage extends StatefulWidget {
   const CashOutPage({super.key});
@@ -19,13 +17,11 @@ class _CashOutPageState extends State<CashOutPage> {
   TextEditingController pengeluaranController = TextEditingController();
   TextEditingController tanggalController = TextEditingController();
   String? selectedItem;
-  String? selectedItem2;
   String hintTanggal = "--";
 
   @override
   void initState() {
     super.initState();
-
     pengeluaranController
         .addListener(() => formatCurrencyController(pengeluaranController));
     initializeDateFormatting("id_ID", null);
@@ -297,35 +293,35 @@ class _CashOutPageState extends State<CashOutPage> {
                         ),
                       ),
                       onTap: () async {
-                        try {
-                          // MELAKUKAN KONVERSI TERHADAP DATA BOS YANG AWALNYA STRING MENJADI INTEGER
-                          int konversiPengeluaranController = int.parse(
-                              pengeluaranController.text.replaceAll('.', ''));
+                        // try {
+                        //   // MELAKUKAN KONVERSI TERHADAP DATA BOS YANG AWALNYA STRING MENJADI INTEGER
+                        //   int konversiPengeluaranController = int.parse(
+                        //       pengeluaranController.text.replaceAll('.', ''));
 
-                          // MELAKUKAN KONVERSI TANGGAL DARI STRING MENJADI DATETIME
-                          DateTime konversiTanggalPemasukan =
-                              DateFormat("d MMMM yyyy", "id_ID")
-                                  .parse(tanggalController.text);
+                        //   // MELAKUKAN KONVERSI TANGGAL DARI STRING MENJADI DATETIME
+                        //   DateTime konversiTanggalPemasukan =
+                        //       DateFormat("d MMMM yyyy", "id_ID")
+                        //           .parse(tanggalController.text);
 
-                          // MEMANGGIL METHOD addNewDataPengeluaran() UNTUK MENGINPUT DATA KE SERVER
-                          await PengeluaranServices().addNewDataPengeluaran(
-                              konversiPengeluaranController,
-                              konversiTanggalPemasukan);
+                        //   // MEMANGGIL METHOD addNewDataPengeluaran() UNTUK MENGINPUT DATA KE SERVER
+                        //   await PengeluaranServices().addNewDataPengeluaran(
+                        //       konversiPengeluaranController,
+                        //       konversiTanggalPemasukan);
 
-                          Get.back(result: true);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              backgroundColor: universalColors,
-                              content: Text("DATA BERHASIL DITAMBAHKAN",
-                                  style: boldComponentFonts),
-                              duration: const Duration(seconds: 3),
-                            ),
-                          );
-                        } catch (e) {
-                          print("Error: $e");
-                        } finally {
-                          Get.back();
-                        }
+                        //   Get.back(result: true);
+                        //   ScaffoldMessenger.of(context).showSnackBar(
+                        //     SnackBar(
+                        //       backgroundColor: universalColors,
+                        //       content: Text("DATA BERHASIL DITAMBAHKAN",
+                        //           style: boldComponentFonts),
+                        //       duration: const Duration(seconds: 3),
+                        //     ),
+                        //   );
+                        // } catch (e) {
+                        //   print("Error: $e");
+                        // } finally {
+                        //   Get.back();
+                        // }
                       },
                     )
                   ],

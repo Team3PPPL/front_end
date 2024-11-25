@@ -24,7 +24,7 @@ class ProfilePage extends StatelessWidget {
                         AspectRatio(
                             aspectRatio: 16 / 5.5,
                             child: Image.asset(
-                              "assets/logo2.png",
+                              "assets/logo.png",
                               fit: BoxFit.contain,
                             ))),
 

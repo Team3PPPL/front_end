@@ -74,6 +74,10 @@ class _CashInPageState extends State<CashInPage> {
             style: whiteTitleFonts,
           ),
           centerTitle: true,
+          leading: const Icon(
+            Icons.keyboard_arrow_left_rounded,
+            size: 35,
+          ),
           iconTheme: const IconThemeData(color: Colors.white),
         ),
         body: Padding(

@@ -83,6 +83,8 @@ class DetailIncomePage extends StatelessWidget {
                 const SizedBox(
                   height: 50,
                 ),
+
+                // TOMBOL UNTUK MENCETAK DATA PEMASUKAN DALAM BENTUK PDF
                 buttonPrint(
                     () async => await PemasukanServices().printData(getData.id),
                     context)

@@ -40,7 +40,6 @@ class PemasukanServices {
       "kelas6": kelas6,
       "tanggalPemasukan": tanggalPemasukan.toIso8601String()
     };
-
     try {
       final response = await http.post(
         Uri.parse("$universalUrl/input"),
@@ -116,7 +115,7 @@ class PemasukanServices {
     }
   }
 
-  // FUNCTION UNTUK PRINT DATA SECARA PDF
+  // FUNCTION UNTUK PRINT HASIL PEMASUKAN DALAM BENTUK PDF
   Future printData(int id) async {
     final pdfUrl = "$universalUrl/$id/pdf";
     final response = await http.get(Uri.parse(pdfUrl));

@@ -21,7 +21,7 @@ class IncomePage extends StatefulWidget {
 
 class _IncomePageState extends State<IncomePage> {
   late Future<List<PemasukanModel>> newDataPemasukan;
-  late Future<Map<String, dynamic>> newDataTotal;
+  late Future<Map<String, dynamic>> newDataTotalPemasukan;
   final PemasukanServices pemasukanServices = PemasukanServices();
   final TotalPemasukanService totalPemasukanService = TotalPemasukanService();
 
@@ -29,7 +29,7 @@ class _IncomePageState extends State<IncomePage> {
   void initState() {
     super.initState();
     newDataPemasukan = pemasukanServices.getAllDataPemasukan();
-    newDataTotal = totalPemasukanService.getAllDataTotalPemasukan();
+    newDataTotalPemasukan = totalPemasukanService.getAllDataTotalPemasukan();
   }
 
   // FUNCTION UNTUK MEMPERBARUI DATA SETIAP ADA PERUBAHAN YANG TERJADI
@@ -38,7 +38,7 @@ class _IncomePageState extends State<IncomePage> {
     await TotalPemasukanService().getAllDataTotalPemasukan();
     setState(() {
       newDataPemasukan = pemasukanServices.getAllDataPemasukan();
-      newDataTotal = totalPemasukanService.getAllDataTotalPemasukan();
+      newDataTotalPemasukan = totalPemasukanService.getAllDataTotalPemasukan();
     });
   }
 
@@ -53,9 +53,9 @@ class _IncomePageState extends State<IncomePage> {
         ),
         centerTitle: true,
       ),
-      body:
-          // BASE DETAIL PEMASUKAN
-          Column(
+
+      // BASE DETAIL PEMASUKAN
+      body: Column(
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 15),
@@ -88,7 +88,10 @@ class _IncomePageState extends State<IncomePage> {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
                   } else if (snapshot.hasError) {
-                    return Text("Error: ${snapshot.error}");
+                    return Text(
+                      "Error: ${snapshot.error}",
+                      style: universalFonts,
+                    );
                   } else if (!snapshot.hasData) {
                     return Center(
                         child: Text(
@@ -137,15 +140,6 @@ class _IncomePageState extends State<IncomePage> {
                                         // MENAMPILKAN TOTAL PEMASUKAN YANG DITERIMA DALAM 1 PERIODE
                                         Text(
                                           "+ ${formatCurrencyString("$totalPemasukanIndex")}",
-                                          style: universalFonts,
-                                        ),
-                                        const SizedBox(
-                                          height: 5,
-                                        ),
-
-                                        // MENAMPILKAN ID DARI SETIAP DATA
-                                        Text(
-                                          "${getData.id}",
                                           style: universalFonts,
                                         ),
                                       ],
@@ -210,7 +204,7 @@ class _IncomePageState extends State<IncomePage> {
         ],
       ),
       bottomSheet: FutureBuilder(
-        future: newDataTotal,
+        future: newDataTotalPemasukan,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Center(
@@ -220,7 +214,8 @@ class _IncomePageState extends State<IncomePage> {
             return baseTotalPemasukan(context, "--");
           } else {
             final getDataTotal = snapshot.data;
-            return baseTotalPemasukan(context, getDataTotal?["totalAllIds"]);
+            return baseTotalPemasukan(
+                context, "${getDataTotal!["totalPemasukan"]}");
           }
         },
       ),
@@ -257,7 +252,7 @@ class _IncomePageState extends State<IncomePage> {
                     borderRadius: BorderRadius.circular(15)),
                 child: Center(
                   child: Text(
-                    baseText.replaceAll(',00', ''),
+                    formatCurrencyString(baseText),
                     style: universalFonts,
                   ),
                 ),
