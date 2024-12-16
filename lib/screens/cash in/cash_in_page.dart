@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:pppl_apps/constant/appColor.dart';
 import 'package:pppl_apps/constant/appFont.dart';
 import 'package:pppl_apps/components/format_currency_controller.dart';
-import 'package:pppl_apps/services/pemasukan_services.dart';
+import 'package:pppl_apps/services/income_services.dart';
 
 class CashInPage extends StatefulWidget {
   const CashInPage({super.key});
@@ -52,18 +52,20 @@ class _CashInPageState extends State<CashInPage> {
       context: context,
       locale: const Locale("id", "ID"),
       initialDate: DateTime.now(),
+      initialDatePickerMode: DatePickerMode.year,
       firstDate: DateTime(2023),
       lastDate: DateTime(2050),
     );
     if (setDate != null) {
-      tanggalController.text =
-          DateFormat("d MMMM yyyy", "id_ID").format(setDate);
+      tanggalController.text = DateFormat("yyyy", "id_ID").format(setDate);
       hintTanggal = tanggalController.text;
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    double widthDivider =
+        MediaQuery.of(context).size.width / 20; // MEMBERIKAN UKURAN YANG PASTI
     Intl.defaultLocale = 'id';
     return Scaffold(
         backgroundColor: Colors.white,
@@ -74,9 +76,12 @@ class _CashInPageState extends State<CashInPage> {
             style: whiteTitleFonts,
           ),
           centerTitle: true,
-          leading: const Icon(
-            Icons.keyboard_arrow_left_rounded,
-            size: 35,
+          leading: IconButton(
+            iconSize: 35,
+            icon: const Icon(Icons.keyboard_arrow_left_rounded),
+            onPressed: () {
+              Get.back();
+            },
           ),
           iconTheme: const IconThemeData(color: Colors.white),
         ),
@@ -133,9 +138,10 @@ class _CashInPageState extends State<CashInPage> {
                         child: IntrinsicHeight(
                           child: Row(
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 42),
+                              Container(
+                                margin: EdgeInsets.symmetric(
+                                    vertical: 10,
+                                    horizontal: widthDivider + 18.5),
                                 child: Center(
                                     child: Text(
                                   "BOS",
@@ -225,9 +231,10 @@ class _CashInPageState extends State<CashInPage> {
                                   child: IntrinsicHeight(
                                     child: Row(
                                       children: [
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 10, horizontal: 30),
+                                        Container(
+                                          margin: EdgeInsets.symmetric(
+                                              vertical: 10,
+                                              horizontal: widthDivider + 3.5),
                                           child: Center(
                                               child: Text(
                                             "Kelas ${index + 1}",
@@ -303,9 +310,9 @@ class _CashInPageState extends State<CashInPage> {
                         child: IntrinsicHeight(
                           child: Row(
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 27),
+                              Container(
+                                margin: EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: widthDivider),
                                 child: Center(
                                   child: Text(
                                     "Tanggal",
@@ -330,12 +337,10 @@ class _CashInPageState extends State<CashInPage> {
                                   controller: tanggalController,
                                   style: boldComponentFonts,
                                   readOnly: true,
-                                  maxLines: 2,
                                   textAlign: TextAlign.center,
                                   decoration: InputDecoration(
                                       isDense: true,
                                       hintText: hintTanggal,
-                                      hintMaxLines: 2,
                                       suffixIcon: const Icon(
                                           Icons.calendar_month_sharp),
                                       border: const OutlineInputBorder(
@@ -388,11 +393,11 @@ class _CashInPageState extends State<CashInPage> {
 
                             // MELAKUKAN KONVERSI TANGGAL DARI STRING MENJADI DATETIME
                             DateTime konversiTanggalPemasukan =
-                                DateFormat("d MMMM yyyy", "id_ID")
+                                DateFormat("yyyy", "id_ID")
                                     .parse(tanggalController.text);
 
                             // MEMANGGIL METHOD addNewDataPemasukan() UNTUK MENGINPUT DATA KE SERVER
-                            await PemasukanServices().addNewDataPemasukan(
+                            await IncomeServices().addNewDataIncome(
                               konversiDanaBos,
                               getKonversiKelas[0],
                               getKonversiKelas[1],
@@ -407,15 +412,27 @@ class _CashInPageState extends State<CashInPage> {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 backgroundColor: universalColors,
-                                content: Text("DATA BERHASIL DITAMBAHKAN",
-                                    style: boldComponentFonts),
+                                content: Text(
+                                  "DATA BERHASIL DITAMBAHKAN",
+                                  style: boldComponentFonts,
+                                ),
                                 duration: const Duration(seconds: 3),
                               ),
                             );
-                          } catch (e) {
+                          } catch (e, stackTrace) {
+                            // MENAMPILKAN PESAN KESALAHAN
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                backgroundColor: Colors.red,
+                                content: Text(
+                                  "Terjadi kesalahan: $e",
+                                  style: boldComponentFonts,
+                                ),
+                                duration: const Duration(seconds: 3),
+                              ),
+                            );
                             print("Error: $e");
-                          } finally {
-                            Get.back();
+                            print("Stack Trace: $stackTrace");
                           }
                         },
                       )

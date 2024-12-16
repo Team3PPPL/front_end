@@ -1,4 +1,4 @@
-class PemasukanModel {
+class IncomeModel {
   int id;
   int bos;
   int kelas1;
@@ -9,7 +9,7 @@ class PemasukanModel {
   int kelas6;
   DateTime tanggalPemasukan;
 
-  PemasukanModel(
+  IncomeModel(
       {required this.id,
       required this.bos,
       required this.kelas1,
@@ -20,8 +20,8 @@ class PemasukanModel {
       required this.kelas6,
       required this.tanggalPemasukan});
 
-  factory PemasukanModel.fromJson(Map<String, dynamic> json) {
-    return PemasukanModel(
+  factory IncomeModel.fromJson(Map<String, dynamic> json) {
+    return IncomeModel(
         id: json["id"] ?? "Data tidak memiliki id",
         bos: json["bos"] ?? "Data tidak memiliki nilai pemasukan dana bos",
         kelas1: json["kelas1"] ??

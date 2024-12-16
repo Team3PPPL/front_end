@@ -1,19 +1,19 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:pppl_apps/models/pemasukan_model.dart';
+import 'package:pppl_apps/models/income_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class PemasukanServices {
+class IncomeServices {
   final String universalUrl =
       "https://back-end-hazel-nine.vercel.app/pemasukan";
 
   // FUNCTION UNTUK MENGAMBIL SELURUH DATA
-  Future<List<PemasukanModel>> getAllDataPemasukan() async {
+  Future<List<IncomeModel>> getAllDataIncome() async {
     final response = await http.get(Uri.parse(universalUrl));
     if (response.statusCode == 200) {
       final responseBody = jsonDecode(response.body);
       final listData = responseBody['data'] as List;
-      final result = listData.map((e) => PemasukanModel.fromJson(e)).toList();
+      final result = listData.map((e) => IncomeModel.fromJson(e)).toList();
       return result;
     } else {
       throw Exception("Failed to load data");
@@ -21,7 +21,7 @@ class PemasukanServices {
   }
 
   // FUNCTION UNTUK MEMASUKKAN DATA BARU
-  Future<PemasukanModel> addNewDataPemasukan(
+  Future<IncomeModel> addNewDataIncome(
       int bos,
       int kelas1,
       int kelas2,
@@ -49,7 +49,7 @@ class PemasukanServices {
 
       if (response.statusCode == 200) {
         print("Berhasil menambahkan data baru");
-        return PemasukanModel.fromJson(json.decode(response.body));
+        return IncomeModel.fromJson(json.decode(response.body));
       } else {
         print("Failed to post data: ${response.statusCode}");
         print("Response body: ${response.body}");
@@ -61,7 +61,7 @@ class PemasukanServices {
   }
 
   // FUNCTION UNTUK MENGUPDATE DATA
-  Future<PemasukanModel> updateDataPemasukan(
+  Future<IncomeModel> updateDataIncome(
       int id,
       int bos,
       int kelas1,
@@ -81,7 +81,6 @@ class PemasukanServices {
       "kelas6": kelas6,
       'tanggalPemasukan': tanggalPemasukan.toIso8601String()
     };
-
     try {
       final response = await http.put(
         Uri.parse("$universalUrl/update/$id"),
@@ -91,7 +90,7 @@ class PemasukanServices {
 
       if (response.statusCode == 200) {
         print("Data dengan id ${id} berhasil diupdate");
-        return PemasukanModel.fromJson(json.decode(response.body));
+        return IncomeModel.fromJson(json.decode(response.body));
       } else {
         print("Failed to update data: ${response.statusCode}");
         print("Response body: ${response.body}");
@@ -103,7 +102,7 @@ class PemasukanServices {
   }
 
   // FUNCTION UNTUK MENGHAPUS DATA
-  Future<void> deleteDataPemasukan(int id) async {
+  Future<void> deleteDataIncomeById(int id) async {
     final response = await http.delete(
       Uri.parse("$universalUrl/delete/$id"),
     );
@@ -116,13 +115,11 @@ class PemasukanServices {
   }
 
   // FUNCTION UNTUK PRINT HASIL PEMASUKAN DALAM BENTUK PDF
-  Future printData(int id) async {
+  Future printDataIncomeById(int id) async {
     final pdfUrl = "$universalUrl/$id/pdf";
     final response = await http.get(Uri.parse(pdfUrl));
-
     if (response.statusCode == 200) {
       await launchUrl(Uri.parse(pdfUrl));
-      print("$id");
     } else {
       print("Failed to direct data: ${response.statusCode}");
       throw Exception("Failed to direct data");

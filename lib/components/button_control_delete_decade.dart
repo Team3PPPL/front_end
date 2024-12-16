@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:pppl_apps/constant/appColor.dart';
 import 'package:pppl_apps/constant/appFont.dart';
 
-buttonControlDelete(iconButton, Function apiMethod, String jenisData,
+buttonControlDeleteDecade(iconButton, Function apiMethod, String decade,
     Function refreshData, context) {
   return GestureDetector(
     child: Container(
@@ -49,8 +49,9 @@ buttonControlDelete(iconButton, Function apiMethod, String jenisData,
                     color: Colors.black,
                   ),
                   Text(
-                      "Apakah anda ingin menghapus data $jenisData dari database?",
-                      style: universalFonts),
+                    "Apakah anda ingin menghapus seluruh data pada periode: $decade dari database?",
+                    style: universalFonts,
+                  ),
                 ],
               ),
 
@@ -75,7 +76,7 @@ buttonControlDelete(iconButton, Function apiMethod, String jenisData,
                       SnackBar(
                         backgroundColor: universalColors,
                         content: Text(
-                          "DATA $jenisData BERHASIL DIHAPUS",
+                          "DATA PERIODE $decade BERHASIL DIHAPUS",
                           style: boldComponentFonts,
                         ),
                         duration: const Duration(seconds: 3),

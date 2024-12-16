@@ -1,18 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:pppl_apps/components/button_print.dart';
 import 'package:pppl_apps/components/format_currency_string.dart';
 import 'package:pppl_apps/constant/appColor.dart';
 import 'package:pppl_apps/constant/appFont.dart';
-import 'package:pppl_apps/models/pemasukan_model.dart';
-import 'package:pppl_apps/services/pemasukan_services.dart';
+import 'package:pppl_apps/models/income_model.dart';
+import 'package:pppl_apps/services/income_services.dart';
 
 class DetailIncomePage extends StatelessWidget {
-  PemasukanModel pemasukanModel;
-  DetailIncomePage({super.key, required this.pemasukanModel});
+  IncomeModel incomeModel;
+  dynamic totalIncome;
+  DetailIncomePage(
+      {super.key, required this.incomeModel, required this.totalIncome});
+
+  String formatCurrency(String value) {
+    final number =
+        int.tryParse(value.replaceAll('.', '').replaceAll('.', '')) ?? 0;
+    final format =
+        NumberFormat.currency(locale: 'id_ID', symbol: '', decimalDigits: 0);
+    return format.format(number);
+  }
 
   @override
   Widget build(BuildContext context) {
-    final getData = pemasukanModel;
+    final getData = incomeModel;
+    final getTotalIncome = totalIncome["totalPemasukan"];
     return Scaffold(
         backgroundColor: Colors.white,
         body: Center(
@@ -71,14 +83,14 @@ class DetailIncomePage extends StatelessWidget {
 
                     // MENAMPILKAN SELURUH ITEM DALAM BENTUK TABEL
                     rows: [
-                      rowOfTable("Bos", "${getData.bos}"),
-                      rowOfTable("Kelas 1", "${getData.kelas1}"),
-                      rowOfTable("Kelas 2", "${getData.kelas2}"),
-                      rowOfTable("Kelas 3", "${getData.kelas3}"),
-                      rowOfTable("Kelas 4", "${getData.kelas4}"),
-                      rowOfTable("Kelas 5", "${getData.kelas5}"),
-                      rowOfTable("Kelas 6", "${getData.kelas6}"),
-                      rowOfTable("Total", "3000000"),
+                      rowOfTable("Bos", "${getData.bos}", context),
+                      rowOfTable("Kelas 1", "${getData.kelas1}", context),
+                      rowOfTable("Kelas 2", "${getData.kelas2}", context),
+                      rowOfTable("Kelas 3", "${getData.kelas3}", context),
+                      rowOfTable("Kelas 4", "${getData.kelas4}", context),
+                      rowOfTable("Kelas 5", "${getData.kelas5}", context),
+                      rowOfTable("Kelas 6", "${getData.kelas6}", context),
+                      rowOfTable("Total", "$getTotalIncome", context),
                     ]),
                 const SizedBox(
                   height: 50,
@@ -86,7 +98,8 @@ class DetailIncomePage extends StatelessWidget {
 
                 // TOMBOL UNTUK MENCETAK DATA PEMASUKAN DALAM BENTUK PDF
                 buttonPrint(
-                    () async => await PemasukanServices().printData(getData.id),
+                    () async =>
+                        await IncomeServices().printDataIncomeById(getData.id),
                     context)
               ],
             ),
@@ -95,15 +108,30 @@ class DetailIncomePage extends StatelessWidget {
   }
 
   // FUNCTION UNTUK MENGENERATE ITEM TABEL SATU PER SATU
-  rowOfTable(String keterangan, String nominal) {
+  rowOfTable(String keterangan, String nominal, context) {
     return DataRow(cells: [
       DataCell(Text(
         keterangan,
         style: universalFonts,
       )),
-      DataCell(Text(
-        formatCurrencyString(nominal),
-        style: universalFonts,
+      DataCell(Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Text(
+            "Rp. ",
+            style: universalFonts,
+          ),
+          Container(),
+          SizedBox(
+            // color: Colors.yellow,
+            width: MediaQuery.of(context).size.width / 3.5,
+            child: Text(
+              formatCurrency(nominal),
+              style: universalFonts,
+              textAlign: TextAlign.end,
+            ),
+          ),
+        ],
       )),
     ]);
   }

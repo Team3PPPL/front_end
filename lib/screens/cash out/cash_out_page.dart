@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:pppl_apps/constant/appColor.dart';
 import 'package:pppl_apps/constant/appFont.dart';
 import 'package:pppl_apps/components/format_currency_controller.dart';
 import 'package:pppl_apps/constant/list_pengeluaran.dart' as getPengeluaran;
+import 'package:pppl_apps/services/outcome_service.dart';
 
 class CashOutPage extends StatefulWidget {
-  const CashOutPage({super.key});
+  int decadeId;
+  CashOutPage({super.key, required this.decadeId});
 
   @override
   State<CashOutPage> createState() => _CashOutPageState();
@@ -38,6 +41,8 @@ class _CashOutPageState extends State<CashOutPage> {
     );
     if (setDate != null) {
       setState(() {
+        tanggalController.text =
+            DateFormat("d MMMM yyyy", "id_ID").format(setDate);
         hintTanggal = DateFormat("d MMMM yyyy", "id_ID").format(setDate);
       });
     }
@@ -45,6 +50,8 @@ class _CashOutPageState extends State<CashOutPage> {
 
   @override
   Widget build(BuildContext context) {
+    double widthDivider =
+        MediaQuery.of(context).size.width / 25; // MEMBERIKAN UKURAN YANG PASTI
     Intl.defaultLocale = 'id';
     return Scaffold(
       backgroundColor: Colors.white,
@@ -55,6 +62,13 @@ class _CashOutPageState extends State<CashOutPage> {
           style: whiteTitleFonts,
         ),
         centerTitle: true,
+        leading: IconButton(
+          iconSize: 35,
+          icon: const Icon(Icons.keyboard_arrow_left_rounded),
+          onPressed: () {
+            Get.back();
+          },
+        ),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: Padding(
@@ -109,10 +123,10 @@ class _CashOutPageState extends State<CashOutPage> {
                                 Border.all(color: componentColors, width: 2)),
                         child:
                             // BASE DROPDOWN BUTTON YANG DAPAT MENAMPILKAN SELURUH JENIS PENGELUARAN
-                            DropdownButton<String>(
+                            DropdownButton(
                                 value: selectedItem,
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 30),
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: widthDivider),
                                 dropdownColor: universalColors,
                                 isExpanded: true,
                                 underline: Container(),
@@ -161,8 +175,8 @@ class _CashOutPageState extends State<CashOutPage> {
                         child: Row(
                           children: [
                             Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 18.5),
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: widthDivider),
                               child: Center(
                                   child: Text(
                                 "Cash Out",
@@ -254,10 +268,10 @@ class _CashOutPageState extends State<CashOutPage> {
                                 controller: tanggalController,
                                 style: boldComponentFonts,
                                 readOnly: true,
+                                textAlign: TextAlign.center,
                                 decoration: InputDecoration(
                                     isDense: true,
                                     hintText: hintTanggal,
-                                    hintMaxLines: 2,
                                     suffixIcon:
                                         const Icon(Icons.calendar_month_sharp),
                                     border: const OutlineInputBorder(
@@ -293,35 +307,20 @@ class _CashOutPageState extends State<CashOutPage> {
                         ),
                       ),
                       onTap: () async {
-                        // try {
-                        //   // MELAKUKAN KONVERSI TERHADAP DATA BOS YANG AWALNYA STRING MENJADI INTEGER
-                        //   int konversiPengeluaranController = int.parse(
-                        //       pengeluaranController.text.replaceAll('.', ''));
+                        try {
+                          // MELAKUKAN KONVERSI TERHADAP DATA DANA BOS YANG AWALNYA STRING MENJADI INTEGER
+                          int konversiPengeluaran = int.parse(
+                              pengeluaranController.text.replaceAll('.', ''));
 
-                        //   // MELAKUKAN KONVERSI TANGGAL DARI STRING MENJADI DATETIME
-                        //   DateTime konversiTanggalPemasukan =
-                        //       DateFormat("d MMMM yyyy", "id_ID")
-                        //           .parse(tanggalController.text);
-
-                        //   // MEMANGGIL METHOD addNewDataPengeluaran() UNTUK MENGINPUT DATA KE SERVER
-                        //   await PengeluaranServices().addNewDataPengeluaran(
-                        //       konversiPengeluaranController,
-                        //       konversiTanggalPemasukan);
-
-                        //   Get.back(result: true);
-                        //   ScaffoldMessenger.of(context).showSnackBar(
-                        //     SnackBar(
-                        //       backgroundColor: universalColors,
-                        //       content: Text("DATA BERHASIL DITAMBAHKAN",
-                        //           style: boldComponentFonts),
-                        //       duration: const Duration(seconds: 3),
-                        //     ),
-                        //   );
-                        // } catch (e) {
-                        //   print("Error: $e");
-                        // } finally {
-                        //   Get.back();
-                        // }
+                          await OutcomeServices().addNewDataOutcome(
+                              widget.decadeId,
+                              selectedItem!,
+                              konversiPengeluaran);
+                        } catch (e) {
+                          print("Error: $e");
+                        } finally {
+                          // Get.back();
+                        }
                       },
                     )
                   ],

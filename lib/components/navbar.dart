@@ -51,18 +51,16 @@ class _NavBarState extends State<NavBar> {
                 ),
                 selectedColor: Colors.white),
             BottomBarItem(
-                icon: selectedPage == 1
-                    ? const Icon(CupertinoIcons.arrow_down_square_fill)
-                    : const Icon(CupertinoIcons.arrow_down_square),
+                icon: const Icon(Icons.trending_up),
+                // ? const Icon(CupertinoIcons.arrow_down_square_fill)
+                // : const Icon(CupertinoIcons.arrow_down_square),
                 title: Text("Cash In",
                     style: selectedPage == 1
                         ? whiteComponentFonts
                         : unselectedComponentFonts),
                 selectedColor: Colors.white),
             BottomBarItem(
-                icon: selectedPage == 2
-                    ? const Icon(CupertinoIcons.arrow_up_square_fill)
-                    : const Icon(CupertinoIcons.arrow_up_square),
+                icon: const Icon(Icons.trending_down),
                 title: Text("Cash Out",
                     style: selectedPage == 2
                         ? whiteComponentFonts

@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1044355424612",
+    "project_id": "pppl3-backend",
+    "storage_bucket": "pppl3-backend.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1044355424612:android:9e5b2423948df3eb141a71",
+        "android_client_info": {
+          "package_name": "com.example.pppl_apps"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBnk4RyRDohavOKkt707v2BtabSMxRihfg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1044355424612:android:a24b65be66cbab9f141a71",
+        "android_client_info": {
+          "package_name": "p3l.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBnk4RyRDohavOKkt707v2BtabSMxRihfg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

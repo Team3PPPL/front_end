@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-class TotalPemasukanService {
+class TotalIncomeServices {
   final String universalUrl =
       "https://back-end-hazel-nine.vercel.app/total/pemasukan";
 
   // FUNCTION UNTUK MENDAPATKAN SELURUH TOTAL PEMASUKAN
-  Future<Map<String, dynamic>> getAllDataTotalPemasukan() async {
+  Future<Map<String, dynamic>> getAllDataTotalIncome() async {
     final response = await http.get(Uri.parse(universalUrl));
     if (response.statusCode == 200) {
       return json.decode(response.body);
@@ -16,7 +16,7 @@ class TotalPemasukanService {
   }
 
   // FUNCTION UNTUK MENDAPATKAN TOTAL PEMASUKAN BERDASARKAN PERIODE
-  Future<Map<String, dynamic>> getAllDataTotalPemasukanInDecade(
+  Future<Map<String, dynamic>> getAllDataTotalIncomeByDecadeID(
       int decadeId) async {
     final response = await http.get(Uri.parse("$universalUrl/$decadeId"));
     if (response.statusCode == 200) {

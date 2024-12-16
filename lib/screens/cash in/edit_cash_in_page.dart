@@ -2,14 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
+import 'package:pppl_apps/components/format_date_string.dart';
 import 'package:pppl_apps/constant/appColor.dart';
 import 'package:pppl_apps/constant/appFont.dart';
 import 'package:pppl_apps/components/format_currency_controller.dart';
-import 'package:pppl_apps/models/pemasukan_model.dart';
-import 'package:pppl_apps/services/pemasukan_services.dart';
+import 'package:pppl_apps/models/income_model.dart';
+import 'package:pppl_apps/services/income_services.dart';
 
 class EditCashInPage extends StatefulWidget {
-  PemasukanModel pemasukanModel;
+  IncomeModel pemasukanModel;
   EditCashInPage({super.key, required this.pemasukanModel});
 
   @override
@@ -50,37 +51,13 @@ class _EditCashInPageState extends State<EditCashInPage> {
     fetchDataAkhir();
   }
 
-  // FUNCTION UNTUK MENDAPATKAN DATA TERAKHIR BERDASARKAN DATA YANG DIPILIH PADA HALAMAN UTAMA
-  Future<void> fetchDataAkhir() async {
-    try {
-      final allData = await PemasukanServices().getAllDataPemasukan();
-      final getData = widget.pemasukanModel;
-
-      if (allData.isNotEmpty) {
-        setState(() {
-          int id = getData.id;
-          danaBosController.text = getData.bos.toString();
-          inputUser[0].text = getData.kelas1.toString();
-          inputUser[1].text = getData.kelas2.toString();
-          inputUser[2].text = getData.kelas3.toString();
-          inputUser[3].text = getData.kelas4.toString();
-          inputUser[4].text = getData.kelas5.toString();
-          inputUser[5].text = getData.kelas6.toString();
-          tanggalController.text = DateFormat("d MMMM yyyy", "id_ID")
-              .format(getData.tanggalPemasukan);
-        });
-      }
-    } catch (e) {
-      throw Exception("Error: $e");
-    }
-  }
-
   // FUNCTION UNTUK MEMILIH TANGGAL MELALUI KALENDER
   Future<void> selectDate() async {
     DateTime? setDate = await showDatePicker(
       context: context,
       locale: const Locale("id", "ID"),
       initialDate: DateTime.now(),
+      initialDatePickerMode: DatePickerMode.year,
       firstDate: DateTime(2023),
       lastDate: DateTime(2050),
     );
@@ -91,6 +68,29 @@ class _EditCashInPageState extends State<EditCashInPage> {
     }
   }
 
+  // FUNCTION UNTUK MENDAPATKAN DATA TERAKHIR BERDASARKAN DATA YANG DIPILIH PADA HALAMAN UTAMA
+  Future<void> fetchDataAkhir() async {
+    try {
+      final allData = await IncomeServices().getAllDataIncome();
+      final getData = widget.pemasukanModel;
+
+      if (allData.isNotEmpty) {
+        setState(() {
+          danaBosController.text = getData.bos.toString();
+          inputUser[0].text = getData.kelas1.toString();
+          inputUser[1].text = getData.kelas2.toString();
+          inputUser[2].text = getData.kelas3.toString();
+          inputUser[3].text = getData.kelas4.toString();
+          inputUser[4].text = getData.kelas5.toString();
+          inputUser[5].text = getData.kelas6.toString();
+          tanggalController.text = dateTimeFormat(getData.tanggalPemasukan);
+        });
+      }
+    } catch (e) {
+      throw Exception("Error: $e");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Intl.defaultLocale = 'id';
@@ -98,9 +98,27 @@ class _EditCashInPageState extends State<EditCashInPage> {
         backgroundColor: Colors.white,
         appBar: AppBar(
           backgroundColor: componentColors,
-          title: Text(
-            "EDIT PEMASUKAN PERIODE",
-            style: whiteTitleFonts,
+          title: Container(
+            margin: const EdgeInsets.symmetric(vertical: 10),
+            child: Column(
+              children: [
+                Text(
+                  "EDIT PEMASUKAN PERIODE",
+                  style: whiteTitleFonts,
+                ),
+                Text(
+                  "PERIODE: ${widget.pemasukanModel.tanggalPemasukan.year} / ${widget.pemasukanModel.tanggalPemasukan.year + 1}",
+                  style: smallWhiteTitleFonts,
+                )
+              ],
+            ),
+          ),
+          leading: IconButton(
+            iconSize: 35,
+            icon: const Icon(Icons.keyboard_arrow_left_rounded),
+            onPressed: () {
+              Get.back();
+            },
           ),
           centerTitle: true,
           iconTheme: const IconThemeData(color: Colors.white),
@@ -356,11 +374,10 @@ class _EditCashInPageState extends State<EditCashInPage> {
                                   controller: tanggalController,
                                   style: boldComponentFonts,
                                   readOnly: true,
-                                  maxLines: 2,
+                                  textAlign: TextAlign.center,
                                   decoration: InputDecoration(
                                       isDense: true,
                                       hintText: hintTanggal,
-                                      hintMaxLines: 2,
                                       suffixIcon: const Icon(
                                           Icons.calendar_month_sharp),
                                       border: const OutlineInputBorder(
@@ -417,7 +434,7 @@ class _EditCashInPageState extends State<EditCashInPage> {
                                     .parse(tanggalController.text);
 
                             // MEMANGGIL METHOD updateDataPemasukan() UNTUK MEMPERBARUI DATA KE SERVER
-                            await PemasukanServices().updateDataPemasukan(
+                            await IncomeServices().updateDataIncome(
                               widget.pemasukanModel.id,
                               konversiDanaBos,
                               getKonversiKelas[0],

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:pppl_apps/constant/appColor.dart';
 import 'package:pppl_apps/constant/appFont.dart';
+import 'package:pppl_apps/services/outcome_service.dart';
 
 class InputDecadePengeluaranPage extends StatefulWidget {
   const InputDecadePengeluaranPage({super.key});
@@ -22,27 +24,35 @@ class _InputDecadePengeluaranPageState
       context: context,
       locale: const Locale("id", "ID"),
       initialDate: DateTime.now(),
+      initialDatePickerMode: DatePickerMode.year,
       firstDate: DateTime(2023),
       lastDate: DateTime(2050),
     );
     if (setDate != null) {
       setState(() {
-        hintTanggal = DateFormat("d MMMM yyyy", "id_ID").format(setDate);
+        tanggalController.text =
+            DateFormat("d MMMM yyyy", "id_ID").format(setDate);
+        hintTanggal = DateFormat("yyyy", "id_ID").format(setDate);
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    double widthDivider = MediaQuery.of(context).size.width / 25;
+    Intl.defaultLocale = 'id';
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
           backgroundColor: componentColors,
           title: Text("DEKADE PENGELUARAN", style: whiteTitleFonts),
           centerTitle: true,
-          leading: const Icon(
-            Icons.keyboard_arrow_left_rounded,
-            size: 35,
+          leading: IconButton(
+            iconSize: 35,
+            icon: const Icon(Icons.keyboard_arrow_left_rounded),
+            onPressed: () {
+              Get.back();
+            },
           ),
           iconTheme: const IconThemeData(color: Colors.white),
         ),
@@ -86,6 +96,7 @@ class _InputDecadePengeluaranPageState
                       const SizedBox(
                         height: 20,
                       ),
+
                       // CONTAINER INPUT TANGGAL
                       Container(
                         decoration: BoxDecoration(
@@ -97,9 +108,9 @@ class _InputDecadePengeluaranPageState
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 26),
+                              Container(
+                                margin: EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: widthDivider),
                                 child: Center(
                                     child: Text(
                                   "PERIODE",
@@ -123,6 +134,7 @@ class _InputDecadePengeluaranPageState
                                   controller: tanggalController,
                                   style: boldComponentFonts,
                                   readOnly: true,
+                                  textAlign: TextAlign.center,
                                   decoration: InputDecoration(
                                       isDense: true,
                                       hintText: hintTanggal,
@@ -161,7 +173,31 @@ class _InputDecadePengeluaranPageState
                             )),
                           ),
                         ),
-                        onTap: () async {},
+                        onTap: () async {
+                          try {
+                            // MELAKUKAN KONVERSI TANGGAL DARI STRING MENJADI DATETIME
+                            DateTime konversiTanggalPemasukan =
+                                DateFormat("d MMMM yyyy", "id_ID")
+                                    .parse(tanggalController.text);
+
+                            await OutcomeServices()
+                                .addNewDecadeOutcome(konversiTanggalPemasukan);
+                            // Get.back(result: true);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                backgroundColor: universalColors,
+                                content: Text(
+                                    "ANDA BERHASIL MENGINPUT DEKADE PENGELUARAN",
+                                    style: boldComponentFonts),
+                                duration: const Duration(seconds: 3),
+                              ),
+                            );
+                          } catch (e) {
+                            print("Error: $e");
+                          } finally {
+                            // Get.back();
+                          }
+                        },
                       )
                     ],
                   ),

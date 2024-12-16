@@ -1,10 +1,15 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pppl_apps/components/navbar.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:pppl_apps/screens/splash_screen.dart';
+import 'package:pppl_apps/services/firebase/firebase_options.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 
@@ -23,7 +28,7 @@ class MyApp extends StatelessWidget {
         Locale('en', 'US'),
       ],
       theme: ThemeData(useMaterial3: true),
-      home: const NavBar(),
+      home: const SplashScreen(),
     );
   }
 }

@@ -10,8 +10,8 @@ final smallWhiteTitleFonts = GoogleFonts.lato(
 
 // UNIVERSAL FONTS
 final universalFonts = GoogleFonts.lato(fontSize: 15, color: Colors.black);
-final smallUniversalFonts = GoogleFonts.lato(fontSize: 13, color: Colors.black);
 final whiteUniversalFonts = GoogleFonts.lato(fontSize: 15, color: Colors.white);
+final smallUniversalFonts = GoogleFonts.lato(fontSize: 13, color: Colors.black);
 
 // COMPONENT FONTS
 final blackComponentFonts =

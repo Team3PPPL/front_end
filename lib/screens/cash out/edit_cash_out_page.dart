@@ -2,16 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
+import 'package:pppl_apps/components/format_date_string.dart';
 import 'package:pppl_apps/constant/appColor.dart';
 import 'package:pppl_apps/constant/appFont.dart';
 import 'package:pppl_apps/components/format_currency_controller.dart';
-import 'package:pppl_apps/models/pengeluaran_model.dart';
+import 'package:pppl_apps/models/outcome_model.dart';
 import 'package:pppl_apps/constant/list_pengeluaran.dart' as getPengeluaran;
-import 'package:pppl_apps/services/pengeluaran_service.dart';
+import 'package:pppl_apps/services/outcome_service.dart';
 
 class EditCashOutPage extends StatefulWidget {
-  PengeluaranModel pengeluaranModel;
-  EditCashOutPage({super.key, required this.pengeluaranModel});
+  DataModel dataModel;
+  int index;
+  EditCashOutPage({super.key, required this.dataModel, required this.index});
 
   @override
   State<EditCashOutPage> createState() => _EditCashOutPageState();
@@ -22,7 +24,7 @@ class _EditCashOutPageState extends State<EditCashOutPage> {
   TextEditingController tanggalController = TextEditingController();
   String? selectedItem;
   String hintTanggal = "--";
-  String hintText = "Halo";
+  String hintText = "Jenis Pengeluaran";
 
   @override
   void initState() {
@@ -39,11 +41,14 @@ class _EditCashOutPageState extends State<EditCashOutPage> {
       context: context,
       locale: const Locale("id", "ID"),
       initialDate: DateTime.now(),
+      initialDatePickerMode: DatePickerMode.year,
       firstDate: DateTime(2023),
       lastDate: DateTime(2050),
     );
     if (setDate != null) {
       setState(() {
+        tanggalController.text =
+            DateFormat("d MMMM yyyy", "id_ID").format(setDate);
         hintTanggal = DateFormat("d MMMM yyyy", "id_ID").format(setDate);
       });
     }
@@ -52,12 +57,19 @@ class _EditCashOutPageState extends State<EditCashOutPage> {
   // FUNCTION UNTUK MENDAPATKAN DATA TERAKHIR BERDASARKAN DATA YANG DIPILIH PADA HALAMAN UTAMA
   Future<void> fetchDataAkhir() async {
     try {
-      final allData = await PengeluaranServices()
-          .getAllDataDecadePengeluaran(widget.pengeluaranModel.id);
-      final getData = widget.pengeluaranModel;
+      final allData = await OutcomeServices().getDataInDecade(
+          widget.dataModel.id,
+          widget.dataModel.cashouts[widget.index].jenisPengeluaran);
+      if (allData.jenisPengeluaran.isNotEmpty) {
+        setState(() {
+          final getData = widget.dataModel;
+          selectedItem = allData.jenisPengeluaran;
+          pengeluaranController.text =
+              getData.cashouts[widget.index].totalPengeluaran.toString();
 
-      if (allData.isEmpty) {
-        tanggalController.text = "${getData.cashouts["createdAt"]}";
+          tanggalController.text =
+              dateTimeFormat(getData.cashouts[widget.index].createdAt);
+        });
       }
     } catch (e) {
       throw Exception("Error: $e");
@@ -72,10 +84,17 @@ class _EditCashOutPageState extends State<EditCashOutPage> {
       appBar: AppBar(
         backgroundColor: componentColors,
         title: Text(
-          "PENGELUARAN",
+          "EDIT PENGELUARAN",
           style: whiteTitleFonts,
         ),
         centerTitle: true,
+        leading: IconButton(
+          iconSize: 35,
+          icon: const Icon(Icons.keyboard_arrow_left_rounded),
+          onPressed: () {
+            Get.back();
+          },
+        ),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: Padding(
@@ -141,7 +160,7 @@ class _EditCashOutPageState extends State<EditCashOutPage> {
                                 menuWidth:
                                     MediaQuery.of(context).size.width / 1.19,
                                 hint: Text(
-                                  hintText,
+                                  "",
                                   style: boldComponentFonts,
                                   textAlign: TextAlign.center,
                                 ),
@@ -181,9 +200,9 @@ class _EditCashOutPageState extends State<EditCashOutPage> {
                                 Border.all(color: componentColors, width: 2)),
                         child: Row(
                           children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 18.5),
+                            Container(
+                              margin: const EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 21),
                               child: Center(
                                   child: Text(
                                 "Cash Out",
@@ -249,8 +268,8 @@ class _EditCashOutPageState extends State<EditCashOutPage> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
+                            Container(
+                              margin: const EdgeInsets.symmetric(
                                   vertical: 10, horizontal: 26),
                               child: Center(
                                   child: Text(
@@ -278,7 +297,6 @@ class _EditCashOutPageState extends State<EditCashOutPage> {
                                 decoration: InputDecoration(
                                     isDense: true,
                                     hintText: hintTanggal,
-                                    hintMaxLines: 2,
                                     suffixIcon:
                                         const Icon(Icons.calendar_month_sharp),
                                     border: const OutlineInputBorder(
@@ -314,9 +332,6 @@ class _EditCashOutPageState extends State<EditCashOutPage> {
                         ),
                       ),
                       onTap: () {
-                        print(selectedItem);
-                        print(pengeluaranController.text);
-                        print(tanggalController.text);
                         Get.back();
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
