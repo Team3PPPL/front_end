@@ -22,9 +22,9 @@ class _CashInPageState extends State<CashInPage> {
   TextEditingController kelas4Controller = TextEditingController();
   TextEditingController kelas5Controller = TextEditingController();
   TextEditingController kelas6Controller = TextEditingController();
-  TextEditingController tanggalController = TextEditingController();
-  String hintTanggal = "--";
   List<TextEditingController> inputUser = [];
+  String hintTanggal = "--";
+  late int dateNow;
 
   @override
   void initState() {
@@ -43,23 +43,36 @@ class _CashInPageState extends State<CashInPage> {
     for (var controller in inputUser) {
       controller.addListener(() => formatCurrencyController(controller));
     }
+    dateNow = DateTime.now().year;
     initializeDateFormatting("id_ID", null);
   }
 
-  // FUNCTION UNTUK MEMILIH TANGGAL MELALUI KALENDER
-  Future<void> selectDate() async {
-    DateTime? setDate = await showDatePicker(
+  // FUNCTION UNTUK MEMILIH TAHUN PERIODE
+  void selectYear(context) async {
+    showDialog(
       context: context,
-      locale: const Locale("id", "ID"),
-      initialDate: DateTime.now(),
-      initialDatePickerMode: DatePickerMode.year,
-      firstDate: DateTime(2023),
-      lastDate: DateTime(2050),
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Select Periode"),
+          content: SizedBox(
+            height: 300,
+            width: 300,
+            child: YearPicker(
+                firstDate: DateTime(DateTime.now().year - 10),
+                lastDate: DateTime(DateTime.now().year + 10),
+                selectedDate: DateTime(dateNow),
+                currentDate: DateTime(dateNow),
+                onChanged: (DateTime dateTime) {
+                  setState(() {
+                    dateNow = dateTime.year;
+                    hintTanggal = DateFormat("yyyy", "ID_id").format(dateTime);
+                  });
+                  Get.back();
+                }),
+          ),
+        );
+      },
     );
-    if (setDate != null) {
-      tanggalController.text = DateFormat("yyyy", "id_ID").format(setDate);
-      hintTanggal = tanggalController.text;
-    }
   }
 
   @override
@@ -331,25 +344,25 @@ class _CashInPageState extends State<CashInPage> {
                                 width: 1.5,
                               ),
 
-                              // CONTROLLER INPUT TANGGAL
+                              // CONTAINER INPUT TANGGAL
                               Expanded(
-                                child: TextFormField(
-                                  controller: tanggalController,
+                                child: Text(
+                                  hintTanggal,
                                   style: boldComponentFonts,
-                                  readOnly: true,
                                   textAlign: TextAlign.center,
-                                  decoration: InputDecoration(
-                                      isDense: true,
-                                      hintText: hintTanggal,
-                                      suffixIcon: const Icon(
-                                          Icons.calendar_month_sharp),
-                                      border: const OutlineInputBorder(
-                                          borderSide: BorderSide.none)),
-                                  onTap: () {
-                                    selectDate();
-                                  },
                                 ),
                               ),
+
+                              // ICON CALENDAR
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: IconButton(
+                                    icon:
+                                        const Icon(Icons.calendar_month_sharp),
+                                    onPressed: () {
+                                      selectYear(context);
+                                    }),
+                              )
                             ],
                           ),
                         ),
@@ -376,10 +389,25 @@ class _CashInPageState extends State<CashInPage> {
                           ),
                         ),
                         onTap: () async {
+                          if (hintTanggal == "--") {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                backgroundColor: Colors.red,
+                                content: Text(
+                                  "HARAP MENGISI PERIODE PEMASUKAN",
+                                  style: boldComponentFonts,
+                                ),
+                                duration: const Duration(seconds: 3),
+                              ),
+                            );
+                          }
                           try {
                             // MELAKUKAN KONVERSI TERHADAP DATA DANA BOS YANG AWALNYA STRING MENJADI INTEGER
-                            int konversiDanaBos = int.parse(
-                                danaBosController.text.replaceAll('.', ''));
+                            int konversiDanaBos = danaBosController
+                                    .text.isNotEmpty
+                                ? int.parse(
+                                    danaBosController.text.replaceAll('.', ''))
+                                : 0;
 
                             /*
                             MELAKUKAN KONVERSI TERHADAP SELURUH DATA KELAS YANG AWALNYA STRING MENJADI INTEGER
@@ -387,14 +415,21 @@ class _CashInPageState extends State<CashInPage> {
                             */
                             List<int> getKonversiKelas =
                                 inputUser.map((controller) {
-                              return int.parse(
-                                  controller.text.replaceAll('.', ''));
+                              if (controller.text.isNotEmpty) {
+                                return int.parse(
+                                    controller.text.replaceAll('.', ''));
+                              } else {
+                                return 0;
+                              }
                             }).toList();
 
                             // MELAKUKAN KONVERSI TANGGAL DARI STRING MENJADI DATETIME
                             DateTime konversiTanggalPemasukan =
-                                DateFormat("yyyy", "id_ID")
-                                    .parse(tanggalController.text);
+                                DateFormat("yyyy", "id_ID").parse(hintTanggal);
+
+                            print(konversiDanaBos);
+                            print(getKonversiKelas);
+                            print(konversiTanggalPemasukan);
 
                             // MEMANGGIL METHOD addNewDataPemasukan() UNTUK MENGINPUT DATA KE SERVER
                             await IncomeServices().addNewDataIncome(
@@ -420,18 +455,7 @@ class _CashInPageState extends State<CashInPage> {
                               ),
                             );
                           } catch (e, stackTrace) {
-                            // MENAMPILKAN PESAN KESALAHAN
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                backgroundColor: Colors.red,
-                                content: Text(
-                                  "Terjadi kesalahan: $e",
-                                  style: boldComponentFonts,
-                                ),
-                                duration: const Duration(seconds: 3),
-                              ),
-                            );
-                            print("Error: $e");
+                            print("Error Pada Saat Memasukkan Data: $e");
                             print("Stack Trace: $stackTrace");
                           }
                         },

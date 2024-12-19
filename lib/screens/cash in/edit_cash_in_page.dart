@@ -25,9 +25,9 @@ class _EditCashInPageState extends State<EditCashInPage> {
   TextEditingController kelas4Controller = TextEditingController();
   TextEditingController kelas5Controller = TextEditingController();
   TextEditingController kelas6Controller = TextEditingController();
-  TextEditingController tanggalController = TextEditingController();
-  String hintTanggal = '--';
   List<TextEditingController> inputUser = [];
+  String hintTanggal = '--';
+  late int dateNow;
 
   @override
   void initState() {
@@ -40,32 +40,41 @@ class _EditCashInPageState extends State<EditCashInPage> {
       kelas5Controller,
       kelas6Controller
     ];
-
     danaBosController
         .addListener(() => formatCurrencyController(danaBosController));
     for (var controller in inputUser) {
       controller.addListener(() => formatCurrencyController(controller));
     }
-
     initializeDateFormatting("id_ID", null);
     fetchDataAkhir();
   }
 
-  // FUNCTION UNTUK MEMILIH TANGGAL MELALUI KALENDER
-  Future<void> selectDate() async {
-    DateTime? setDate = await showDatePicker(
+  // FUNCTION UNTUK MEMILIH TAHUN PERIODE
+  void selectYear(context) async {
+    showDialog(
       context: context,
-      locale: const Locale("id", "ID"),
-      initialDate: DateTime.now(),
-      initialDatePickerMode: DatePickerMode.year,
-      firstDate: DateTime(2023),
-      lastDate: DateTime(2050),
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Select Periode"),
+          content: SizedBox(
+            height: 300,
+            width: 300,
+            child: YearPicker(
+                firstDate: DateTime(DateTime.now().year - 10),
+                lastDate: DateTime(DateTime.now().year + 10),
+                selectedDate: DateTime(dateNow),
+                currentDate: DateTime(dateNow),
+                onChanged: (DateTime dateTime) {
+                  setState(() {
+                    dateNow = dateTime.year;
+                    hintTanggal = DateFormat("yyyy", "ID_id").format(dateTime);
+                  });
+                  Get.back();
+                }),
+          ),
+        );
+      },
     );
-    if (setDate != null) {
-      tanggalController.text =
-          DateFormat("d MMMM yyyy", "id_ID").format(setDate);
-      hintTanggal = tanggalController.text;
-    }
   }
 
   // FUNCTION UNTUK MENDAPATKAN DATA TERAKHIR BERDASARKAN DATA YANG DIPILIH PADA HALAMAN UTAMA
@@ -83,7 +92,9 @@ class _EditCashInPageState extends State<EditCashInPage> {
           inputUser[3].text = getData.kelas4.toString();
           inputUser[4].text = getData.kelas5.toString();
           inputUser[5].text = getData.kelas6.toString();
-          tanggalController.text = dateTimeFormat(getData.tanggalPemasukan);
+          hintTanggal =
+              DateFormat("yyyy", "ID_id").format(getData.tanggalPemasukan);
+          dateNow = int.parse(hintTanggal);
         });
       }
     } catch (e) {
@@ -368,25 +379,20 @@ class _EditCashInPageState extends State<EditCashInPage> {
                                 width: 1.5,
                               ),
 
-                              // CONTROLLER INPUT TANGGAL
+                              // CONTAINER INPUT TANGGAL
                               Expanded(
-                                child: TextFormField(
-                                  controller: tanggalController,
+                                child: Text(
+                                  hintTanggal,
                                   style: boldComponentFonts,
-                                  readOnly: true,
                                   textAlign: TextAlign.center,
-                                  decoration: InputDecoration(
-                                      isDense: true,
-                                      hintText: hintTanggal,
-                                      suffixIcon: const Icon(
-                                          Icons.calendar_month_sharp),
-                                      border: const OutlineInputBorder(
-                                          borderSide: BorderSide.none)),
-                                  onTap: () {
-                                    selectDate();
-                                  },
                                 ),
                               ),
+
+                              IconButton(
+                                  icon: const Icon(Icons.calendar_month_sharp),
+                                  onPressed: () {
+                                    selectYear(context);
+                                  })
                             ],
                           ),
                         ),
@@ -413,10 +419,25 @@ class _EditCashInPageState extends State<EditCashInPage> {
                           ),
                         ),
                         onTap: () async {
+                          if (hintTanggal == "--") {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                backgroundColor: Colors.red,
+                                content: Text(
+                                  "HARAP MENGISI PERIODE PEMASUKAN",
+                                  style: boldComponentFonts,
+                                ),
+                                duration: const Duration(seconds: 3),
+                              ),
+                            );
+                          }
                           try {
                             // MELAKUKAN KONVERSI TERHADAP DATA DANA BOS YANG AWALNYA STRING MENJADI INTEGER
-                            int konversiDanaBos = int.parse(
-                                danaBosController.text.replaceAll('.', ''));
+                            int konversiDanaBos = danaBosController
+                                    .text.isNotEmpty
+                                ? int.parse(
+                                    danaBosController.text.replaceAll('.', ''))
+                                : 0;
 
                             /*
                             MELAKUKAN KONVERSI TERHADAP SELURUH DATA KELAS YANG AWALNYA STRING MENJADI INTEGER
@@ -424,14 +445,23 @@ class _EditCashInPageState extends State<EditCashInPage> {
                             */
                             List<int> getKonversiKelas =
                                 inputUser.map((controller) {
-                              return int.parse(
-                                  controller.text.replaceAll('.', ''));
+                              if (controller.text.isNotEmpty) {
+                                return int.parse(
+                                    controller.text.replaceAll('.', ''));
+                              } else {
+                                return 0;
+                              }
                             }).toList();
 
                             // MELAKUKAN KONVERSI TANGGAL DARI STRING MENJADI DATETIME
-                            DateTime konversiTanggalPemasukan =
-                                DateFormat("d MMMM yyyy", "id_ID")
-                                    .parse(tanggalController.text);
+                            DateTime konversiTanggalPemasukan = hintTanggal
+                                    .isNotEmpty
+                                ? DateFormat("yyyy", "id_ID").parse(hintTanggal)
+                                : DateTime.now();
+
+                            print(konversiDanaBos);
+                            print(getKonversiKelas);
+                            print(konversiTanggalPemasukan);
 
                             // MEMANGGIL METHOD updateDataPemasukan() UNTUK MEMPERBARUI DATA KE SERVER
                             await IncomeServices().updateDataIncome(
@@ -445,19 +475,32 @@ class _EditCashInPageState extends State<EditCashInPage> {
                               getKonversiKelas[5],
                               konversiTanggalPemasukan,
                             );
+
                             Get.back(result: true);
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 backgroundColor: universalColors,
-                                content: Text("DATA BERHASIL DIUPDATE",
-                                    style: boldComponentFonts),
+                                content: Text(
+                                  "DATA BERHASIL DIPERBARUI",
+                                  style: boldComponentFonts,
+                                ),
                                 duration: const Duration(seconds: 3),
                               ),
                             );
-                          } catch (e) {
+                          } catch (e, stackTrace) {
+                            // MENAMPILKAN PESAN KESALAHAN
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                backgroundColor: Colors.red,
+                                content: Text(
+                                  "HARAP MENGISIKAN PERIODE PEMASUKAN",
+                                  style: boldComponentFonts,
+                                ),
+                                duration: const Duration(seconds: 3),
+                              ),
+                            );
                             print("Error: $e");
-                          } finally {
-                            Get.back();
+                            print("Stack Trace: $stackTrace");
                           }
                         },
                       )

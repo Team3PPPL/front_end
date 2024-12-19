@@ -55,7 +55,8 @@ class _IncomePageState extends State<IncomePage> {
       ),
 
       // BASE DETAIL PEMASUKAN
-      body: Column(
+      body: ListView(
+        physics: const NeverScrollableScrollPhysics(),
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 15),
@@ -79,20 +80,23 @@ class _IncomePageState extends State<IncomePage> {
           ),
           Container(
               margin: const EdgeInsets.only(bottom: 15),
-              height: MediaQuery.of(context).size.height / 1.75,
+              height: MediaQuery.of(context).size.height / 1.68,
               child:
                   // BASE LIST DATA PEMASUKAN YANG TELAH DIINPUT
                   FutureBuilder(
                 future: newDataIncome,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
+                    return const Center(
+                        child: CircularProgressIndicator(
+                      color: componentColors,
+                    ));
                   } else if (snapshot.hasError) {
                     return Text(
                       "Error: ${snapshot.error}",
                       style: universalFonts,
                     );
-                  } else if (!snapshot.hasData) {
+                  } else if (snapshot.data!.isEmpty) {
                     return Center(
                         child: Text(
                       "Ooops, belum ada data yang tersimpan dalam database",
@@ -100,33 +104,30 @@ class _IncomePageState extends State<IncomePage> {
                     ));
                   } else {
                     final getAllData = snapshot.data;
-                    return Align(
-                      alignment: Alignment.topCenter,
-                      child: ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: getAllData!.length,
-                          reverse: true,
-                          itemBuilder: (context, index) {
-                            final getData = getAllData[index];
-                            return FutureBuilder(
-                              future: totalIncomeService
-                                  .getAllDataTotalIncomeByDecadeID(getData.id),
-                              builder: (context, snapshot) {
-                                if (snapshot.connectionState ==
-                                        ConnectionState.waiting ||
-                                    !snapshot.hasData) {
-                                  return baseListIncome(getData, "0", "0");
-                                } else {
-                                  final getTotalIncome = snapshot.data;
-                                  return baseListIncome(
-                                      getData,
-                                      "${getTotalIncome!["totalPemasukan"]}",
-                                      getTotalIncome);
-                                }
-                              },
-                            );
-                          }),
-                    );
+                    getAllData!.sort((a, b) => b.id.compareTo(a.id));
+                    return ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: getAllData.length,
+                        itemBuilder: (context, index) {
+                          final getData = getAllData[index];
+                          return FutureBuilder(
+                            future: totalIncomeService
+                                .getAllDataTotalIncomeByDecadeID(getData.id),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                      ConnectionState.waiting ||
+                                  !snapshot.hasData) {
+                                return baseListIncome(getData, "0", "0");
+                              } else {
+                                final getTotalIncome = snapshot.data;
+                                return baseListIncome(
+                                    getData,
+                                    "${getTotalIncome!["totalPemasukan"]}",
+                                    getTotalIncome);
+                              }
+                            },
+                          );
+                        });
                   }
                 },
               )),
@@ -184,15 +185,6 @@ class _IncomePageState extends State<IncomePage> {
                     // MENAMPILKAN TOTAL PEMASUKAN YANG DITERIMA DALAM 1 PERIODE
                     Text(
                       "+ ${formatCurrencyString(totalPemasukan)}",
-                      style: universalFonts,
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-
-                    // MENAMPILKAN TOTAL PEMASUKAN YANG DITERIMA DALAM 1 PERIODE
-                    Text(
-                      "${getData.id}",
                       style: universalFonts,
                     ),
                   ],

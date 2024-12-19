@@ -1,12 +1,12 @@
 class IncomeModel {
-  int id;
-  int bos;
-  int kelas1;
-  int kelas2;
-  int kelas3;
-  int kelas4;
-  int kelas5;
-  int kelas6;
+  late int id;
+  late int bos;
+  late int kelas1;
+  late int kelas2;
+  late int kelas3;
+  late int kelas4;
+  late int kelas5;
+  late int kelas6;
   DateTime tanggalPemasukan;
 
   IncomeModel(
@@ -23,19 +23,13 @@ class IncomeModel {
   factory IncomeModel.fromJson(Map<String, dynamic> json) {
     return IncomeModel(
         id: json["id"] ?? "Data tidak memiliki id",
-        bos: json["bos"] ?? "Data tidak memiliki nilai pemasukan dana bos",
-        kelas1: json["kelas1"] ??
-            "Data tidak memiliki nilai pemasukan untuk kelas 1",
-        kelas2: json["kelas2"] ??
-            "Data tidak memiliki nilai pemasukan untuk kelas 2",
-        kelas3: json["kelas3"] ??
-            "Data tidak memiliki nilai pemasukan untuk kelas 3",
-        kelas4: json["kelas4"] ??
-            "Data tidak memiliki nilai pemasukan untuk kelas 4",
-        kelas5: json["kelas5"] ??
-            "Data tidak memiliki nilai pemasukan untuk kelas 5",
-        kelas6: json["kelas6"] ??
-            "Data tidak memiliki nilai pemasukan untuk kelas 6",
+        bos: json["bos"] ?? 0,
+        kelas1: json["kelas1"] ?? 0,
+        kelas2: json["kelas2"] ?? 0,
+        kelas3: json["kelas3"] ?? 0,
+        kelas4: json["kelas4"] ?? 0,
+        kelas5: json["kelas5"] ?? 0,
+        kelas6: json["kelas6"] ?? 0,
         tanggalPemasukan: DateTime.parse(
             json["tanggalPemasukan"] ?? DateTime.now().toIso8601String()));
   }

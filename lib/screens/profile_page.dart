@@ -9,50 +9,56 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        Container(
-          color: componentColors,
-          child: Container(
-            margin: const EdgeInsets.all(15),
-            child: Column(
-              children: [
-                Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 15),
-                    child:
-                        // LOGO MITRA
-                        AspectRatio(
-                            aspectRatio: 16 / 5.5,
-                            child: Image.asset(
-                              "assets/logo.png",
-                              fit: BoxFit.contain,
-                            ))),
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: componentColors,
+        toolbarHeight: 0,
+      ),
+      body: ListView(
+        children: [
+          Container(
+            color: componentColors,
+            child: Container(
+              margin: const EdgeInsets.all(15),
+              child: Column(
+                children: [
+                  Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 15),
+                      child:
+                          // LOGO MITRA
+                          AspectRatio(
+                              aspectRatio: 16 / 5.5,
+                              child: Image.asset(
+                                "assets/logo.png",
+                                fit: BoxFit.contain,
+                              ))),
 
-                // NAMA MITRA
-                Text(
-                  "Perguruan Tansyitul Muta'allimin",
-                  style: titleFonts,
-                  textAlign: TextAlign.center,
-                ),
-                const Divider(
-                  color: Colors.black,
-                  thickness: 2,
-                ),
+                  // NAMA MITRA
+                  Text(
+                    "Tansyitul Muta'allimin",
+                    style: whiteTitleFonts,
+                    textAlign: TextAlign.center,
+                  ),
+                  const Divider(
+                    color: Colors.white,
+                    thickness: 2,
+                  ),
 
-                // DESKRIPSI SINGKAT MITRA
-                Text(
-                  aboutUs,
-                  style: universalFonts,
-                  textAlign: TextAlign.center,
-                ),
-              ],
+                  // DESKRIPSI SINGKAT MITRA
+                  Text(
+                    aboutUs,
+                    style: whiteUniversalFonts,
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
 
-        // UI REKAPITULASI MITRA
-        const ListRekapitulasiUI(),
-      ],
+          // UI REKAPITULASI MITRA
+          const ListRekapitulasiUI(),
+        ],
+      ),
     );
   }
 }

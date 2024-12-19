@@ -18,9 +18,9 @@ class CashOutPage extends StatefulWidget {
 
 class _CashOutPageState extends State<CashOutPage> {
   TextEditingController pengeluaranController = TextEditingController();
-  TextEditingController tanggalController = TextEditingController();
   String? selectedItem;
   String hintTanggal = "--";
+  late DateTime dateNow;
 
   @override
   void initState() {
@@ -32,17 +32,25 @@ class _CashOutPageState extends State<CashOutPage> {
 
   // FUNCTION UNTUK MEMILIH TANGGAL MELALUI KALENDER
   Future<void> selectDate() async {
+    if (hintTanggal.isNotEmpty) {
+      try {
+        dateNow = DateFormat("d MMMM yyyy", "id_ID").parse(hintTanggal);
+      } catch (e) {
+        dateNow = DateTime.now();
+      }
+    } else {
+      dateNow = DateTime.now();
+    }
+
     DateTime? setDate = await showDatePicker(
       context: context,
       locale: const Locale("id", "ID"),
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2023),
-      lastDate: DateTime(2050),
+      initialDate: dateNow,
+      firstDate: DateTime(DateTime.now().year - 10),
+      lastDate: DateTime(DateTime.now().year + 10),
     );
     if (setDate != null) {
       setState(() {
-        tanggalController.text =
-            DateFormat("d MMMM yyyy", "id_ID").format(setDate);
         hintTanggal = DateFormat("d MMMM yyyy", "id_ID").format(setDate);
       });
     }
@@ -262,25 +270,24 @@ class _CashOutPageState extends State<CashOutPage> {
                               width: 1.5,
                             ),
 
-                            // CONTROLLER INPUT TANGGAL PENGELUARAN
+                            // CONTAINER INPUT TANGGAL
                             Expanded(
-                              child: TextFormField(
-                                controller: tanggalController,
+                              child: Text(
+                                hintTanggal,
                                 style: boldComponentFonts,
-                                readOnly: true,
                                 textAlign: TextAlign.center,
-                                decoration: InputDecoration(
-                                    isDense: true,
-                                    hintText: hintTanggal,
-                                    suffixIcon:
-                                        const Icon(Icons.calendar_month_sharp),
-                                    border: const OutlineInputBorder(
-                                        borderSide: BorderSide.none)),
-                                onTap: () {
-                                  selectDate();
-                                },
                               ),
                             ),
+
+                            // ICON CALENDAR
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: IconButton(
+                                  icon: const Icon(Icons.calendar_month_sharp),
+                                  onPressed: () {
+                                    selectDate();
+                                  }),
+                            )
                           ],
                         ),
                       ),
@@ -307,19 +314,60 @@ class _CashOutPageState extends State<CashOutPage> {
                         ),
                       ),
                       onTap: () async {
+                        if (selectedItem == null || selectedItem!.isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              backgroundColor: Colors.red,
+                              content: Text(
+                                "HARAP MENGISI JENIS PENGELUARAN",
+                                style: boldComponentFonts,
+                              ),
+                              duration: const Duration(seconds: 3),
+                            ),
+                          );
+                          return;
+                        }
+                        if (hintTanggal == "--") {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              backgroundColor: Colors.red,
+                              content: Text(
+                                "HARAP MENGISI PERIODE PENGELUARAN",
+                                style: boldComponentFonts,
+                              ),
+                              duration: const Duration(seconds: 3),
+                            ),
+                          );
+                          return;
+                        }
                         try {
                           // MELAKUKAN KONVERSI TERHADAP DATA DANA BOS YANG AWALNYA STRING MENJADI INTEGER
-                          int konversiPengeluaran = int.parse(
-                              pengeluaranController.text.replaceAll('.', ''));
+                          int konversiPengeluaran =
+                              pengeluaranController.text.isNotEmpty
+                                  ? int.parse(pengeluaranController.text
+                                      .replaceAll('.', ''))
+                                  : 0;
 
                           await OutcomeServices().addNewDataOutcome(
                               widget.decadeId,
                               selectedItem!,
                               konversiPengeluaran);
-                        } catch (e) {
+
+                          Get.back(result: true);
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              backgroundColor: universalColors,
+                              content: Text(
+                                "DATA BERHASIL DITAMBAHKAN",
+                                style: boldComponentFonts,
+                              ),
+                              duration: const Duration(seconds: 3),
+                            ),
+                          );
+                        } catch (e, stackTrace) {
                           print("Error: $e");
-                        } finally {
-                          // Get.back();
+                          print("Stack Trace: $stackTrace");
                         }
                       },
                     )

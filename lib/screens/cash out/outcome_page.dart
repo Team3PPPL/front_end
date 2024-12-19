@@ -1,4 +1,3 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pppl_apps/components/button_control_delete_decade.dart';
@@ -60,9 +59,10 @@ class _OutcomePageState extends State<OutcomePage> {
         ),
         centerTitle: true,
       ),
-      body:
-          // BASE DETAIL PENGELUARAN
-          Column(
+
+      // BASE DETAIL PENGELUARAN
+      body: ListView(
+        physics: const NeverScrollableScrollPhysics(),
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 15),
@@ -88,12 +88,14 @@ class _OutcomePageState extends State<OutcomePage> {
           // BASE LIST DATA PENGELUARAN YANG TELAH DIINPUT
           Container(
               margin: const EdgeInsets.only(bottom: 15),
-              height: MediaQuery.of(context).size.height / 1.75,
+              height: MediaQuery.of(context).size.height / 1.68,
               child: FutureBuilder(
                   future: newDataOutcome,
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
+                      return const Center(
+                          child: CircularProgressIndicator(
+                              color: componentColors));
                     } else if (snapshot.hasError) {
                       return Text(
                         "Error: ${snapshot.error}",
@@ -107,35 +109,32 @@ class _OutcomePageState extends State<OutcomePage> {
                       ));
                     } else {
                       final getAllData = snapshot.data!;
-                      return Align(
-                        alignment: Alignment.topCenter,
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: getAllData.data.length,
-                          reverse: true,
-                          itemBuilder: (context, index) {
-                            final getData = getAllData.data[index];
-                            return FutureBuilder(
-                              future: totalOutcomeService
-                                  .getAllDataTotalOutcomeByDecadeId(getData.id),
-                              builder: (context, snapshot) {
-                                if (snapshot.connectionState ==
-                                        ConnectionState.waiting ||
-                                    !snapshot.hasData) {
-                                  return baseListDecadeOutcome(
-                                      getData, getAllData, index, "0");
-                                } else {
-                                  final getTotalIncome = snapshot.data!;
-                                  return baseListDecadeOutcome(
-                                      getData,
-                                      getAllData,
-                                      index,
-                                      "${getTotalIncome["totalPengeluaran"]}");
-                                }
-                              },
-                            );
-                          },
-                        ),
+                      getAllData.data!.sort((a, b) => b.id.compareTo(a.id));
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: getAllData.data!.length,
+                        itemBuilder: (context, index) {
+                          final getData = getAllData.data![index];
+                          return FutureBuilder(
+                            future: totalOutcomeService
+                                .getAllDataTotalOutcomeByDecadeId(getData.id),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                      ConnectionState.waiting ||
+                                  !snapshot.hasData) {
+                                return baseListDecadeOutcome(
+                                    getData, getAllData, index, "0");
+                              } else {
+                                final getTotalIncome = snapshot.data!;
+                                return baseListDecadeOutcome(
+                                    getData,
+                                    getAllData,
+                                    index,
+                                    "${getTotalIncome["totalPengeluaran"]}");
+                              }
+                            },
+                          );
+                        },
                       );
                     }
                   })),
@@ -149,13 +148,12 @@ class _OutcomePageState extends State<OutcomePage> {
           FutureBuilder(
             future: newTotalDataOutcome,
             builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting ||
-                  !snapshot.hasData) {
-                return baseTotalOutcome(context, "--");
-              } else if (snapshot.hasError) {
+              if (snapshot.hasError) {
                 return Center(
                   child: Text("Error: ${snapshot.error}"),
                 );
+              } else if (!snapshot.hasData) {
+                return baseTotalOutcome(context, "--");
               } else {
                 final getDataTotal = snapshot.data;
                 return baseTotalOutcome(

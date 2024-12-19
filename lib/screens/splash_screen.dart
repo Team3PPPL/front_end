@@ -40,8 +40,9 @@ class _SplashScreenState extends State<SplashScreen> {
 
               // NAMA APLIKASI
               Text(
-                "Madrasah Ibtidaiyah Tansyitul Muta'allimiin",
+                "Tansyitul Muta'allimiin",
                 style: titleFonts,
+                textAlign: TextAlign.center,
               )
             ],
           ),

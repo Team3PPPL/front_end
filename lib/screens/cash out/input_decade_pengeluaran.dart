@@ -17,24 +17,40 @@ class _InputDecadePengeluaranPageState
     extends State<InputDecadePengeluaranPage> {
   TextEditingController tanggalController = TextEditingController();
   String hintTanggal = "--";
+  late int dateNow;
 
-  // FUNCTION UNTUK MEMILIH TANGGAL MELALUI KALENDER
-  Future<void> selectDate() async {
-    DateTime? setDate = await showDatePicker(
+  @override
+  void initState() {
+    super.initState();
+    dateNow = DateTime.now().year;
+  }
+
+  // FUNCTION UNTUK MEMILIH TAHUN PERIODE
+  void selectYear(context) async {
+    showDialog(
       context: context,
-      locale: const Locale("id", "ID"),
-      initialDate: DateTime.now(),
-      initialDatePickerMode: DatePickerMode.year,
-      firstDate: DateTime(2023),
-      lastDate: DateTime(2050),
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Select Periode"),
+          content: SizedBox(
+            height: 300,
+            width: 300,
+            child: YearPicker(
+                firstDate: DateTime(DateTime.now().year - 10),
+                lastDate: DateTime(DateTime.now().year + 10),
+                selectedDate: DateTime(dateNow),
+                currentDate: DateTime(dateNow),
+                onChanged: (DateTime dateTime) {
+                  setState(() {
+                    dateNow = dateTime.year;
+                    hintTanggal = DateFormat("yyyy", "ID_id").format(dateTime);
+                  });
+                  Get.back();
+                }),
+          ),
+        );
+      },
     );
-    if (setDate != null) {
-      setState(() {
-        tanggalController.text =
-            DateFormat("d MMMM yyyy", "id_ID").format(setDate);
-        hintTanggal = DateFormat("yyyy", "id_ID").format(setDate);
-      });
-    }
   }
 
   @override
@@ -128,26 +144,25 @@ class _InputDecadePengeluaranPageState
                                 width: 1.5,
                               ),
 
-                              // CONTROLLER INPUT TANGGAL PENGELUARAN
+                              // CONTAINER INPUT TANGGAL
                               Expanded(
-                                child: TextFormField(
-                                  controller: tanggalController,
+                                child: Text(
+                                  hintTanggal,
                                   style: boldComponentFonts,
-                                  readOnly: true,
                                   textAlign: TextAlign.center,
-                                  decoration: InputDecoration(
-                                      isDense: true,
-                                      hintText: hintTanggal,
-                                      hintMaxLines: 2,
-                                      suffixIcon: const Icon(
-                                          Icons.calendar_month_sharp),
-                                      border: const OutlineInputBorder(
-                                          borderSide: BorderSide.none)),
-                                  onTap: () {
-                                    selectDate();
-                                  },
                                 ),
                               ),
+
+                              // ICON CALENDAR
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: IconButton(
+                                    icon:
+                                        const Icon(Icons.calendar_month_sharp),
+                                    onPressed: () {
+                                      selectYear(context);
+                                    }),
+                              )
                             ],
                           ),
                         ),
@@ -174,28 +189,40 @@ class _InputDecadePengeluaranPageState
                           ),
                         ),
                         onTap: () async {
+                          if (hintTanggal == "--") {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                backgroundColor: Colors.red,
+                                content: Text(
+                                  "HARAP MENGISI PERIODE PENGELUARAN",
+                                  style: boldComponentFonts,
+                                ),
+                                duration: const Duration(seconds: 3),
+                              ),
+                            );
+                          }
                           try {
                             // MELAKUKAN KONVERSI TANGGAL DARI STRING MENJADI DATETIME
                             DateTime konversiTanggalPemasukan =
-                                DateFormat("d MMMM yyyy", "id_ID")
-                                    .parse(tanggalController.text);
+                                DateFormat("yyyy", "id_ID").parse(hintTanggal);
 
                             await OutcomeServices()
                                 .addNewDecadeOutcome(konversiTanggalPemasukan);
-                            // Get.back(result: true);
+
+                            Get.back(result: true);
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 backgroundColor: universalColors,
                                 content: Text(
-                                    "ANDA BERHASIL MENGINPUT DEKADE PENGELUARAN",
-                                    style: boldComponentFonts),
+                                  "ANDA BERHASIL MENGINPUT DEKADE PENGELUARAN",
+                                  style: boldComponentFonts,
+                                ),
                                 duration: const Duration(seconds: 3),
                               ),
                             );
-                          } catch (e) {
+                          } catch (e, stackTrace) {
                             print("Error: $e");
-                          } finally {
-                            // Get.back();
+                            print("Stack Trace: $stackTrace");
                           }
                         },
                       )

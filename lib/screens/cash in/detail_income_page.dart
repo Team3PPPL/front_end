@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pppl_apps/components/button_print.dart';
-import 'package:pppl_apps/components/format_currency_string.dart';
 import 'package:pppl_apps/constant/appColor.dart';
 import 'package:pppl_apps/constant/appFont.dart';
 import 'package:pppl_apps/models/income_model.dart';
@@ -90,7 +89,7 @@ class DetailIncomePage extends StatelessWidget {
                       rowOfTable("Kelas 4", "${getData.kelas4}", context),
                       rowOfTable("Kelas 5", "${getData.kelas5}", context),
                       rowOfTable("Kelas 6", "${getData.kelas6}", context),
-                      rowOfTable("Total", "$getTotalIncome", context),
+                      rowOfTable("Total Pemasukan", "$getTotalIncome", context),
                     ]),
                 const SizedBox(
                   height: 50,
@@ -113,6 +112,7 @@ class DetailIncomePage extends StatelessWidget {
       DataCell(Text(
         keterangan,
         style: universalFonts,
+        overflow: TextOverflow.clip,
       )),
       DataCell(Row(
         mainAxisAlignment: MainAxisAlignment.end,
@@ -121,10 +121,7 @@ class DetailIncomePage extends StatelessWidget {
             "Rp. ",
             style: universalFonts,
           ),
-          Container(),
-          SizedBox(
-            // color: Colors.yellow,
-            width: MediaQuery.of(context).size.width / 3.5,
+          Expanded(
             child: Text(
               formatCurrency(nominal),
               style: universalFonts,

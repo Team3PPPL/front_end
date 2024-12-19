@@ -19,9 +19,9 @@ buttonControlDirection(iconButton, direction, Function refreshMethod, context) {
       ),
     ),
     onTap: () async {
-      Get.to(direction)!.then((result) {
+      await Get.to(direction)!.then((result) {
         if (result == true) {
-          refreshMethod;
+          refreshMethod();
         }
       });
     },

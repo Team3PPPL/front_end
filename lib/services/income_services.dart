@@ -21,15 +21,8 @@ class IncomeServices {
   }
 
   // FUNCTION UNTUK MEMASUKKAN DATA BARU
-  Future<IncomeModel> addNewDataIncome(
-      int bos,
-      int kelas1,
-      int kelas2,
-      int kelas3,
-      int kelas4,
-      int kelas5,
-      int kelas6,
-      DateTime tanggalPemasukan) async {
+  Future addNewDataIncome(int bos, int kelas1, int kelas2, int kelas3,
+      int kelas4, int kelas5, int kelas6, DateTime tanggalPemasukan) async {
     Map<String, dynamic> requestData = {
       "bos": bos,
       "kelas1": kelas1,
@@ -46,31 +39,25 @@ class IncomeServices {
         headers: {"Content-Type": "application/json"},
         body: json.encode(requestData),
       );
-
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 && requestData.isNotEmpty) {
+        print("Response: ${response.statusCode}");
+        print("Data: ${response.body}");
         print("Berhasil menambahkan data baru");
-        return IncomeModel.fromJson(json.decode(response.body));
+        return response.body;
+        // return IncomeModel.fromJson(json.decode(response.body));
       } else {
-        print("Failed to post data: ${response.statusCode}");
+        print("Response: ${response.statusCode}");
         print("Response body: ${response.body}");
         throw Exception("Failed to post data");
       }
     } catch (e) {
-      throw Exception("Failed to add new data");
+      rethrow;
     }
   }
 
   // FUNCTION UNTUK MENGUPDATE DATA
-  Future<IncomeModel> updateDataIncome(
-      int id,
-      int bos,
-      int kelas1,
-      int kelas2,
-      int kelas3,
-      int kelas4,
-      int kelas5,
-      int kelas6,
-      DateTime tanggalPemasukan) async {
+  Future updateDataIncome(int id, int bos, int kelas1, int kelas2, int kelas3,
+      int kelas4, int kelas5, int kelas6, DateTime tanggalPemasukan) async {
     Map<String, dynamic> requestData = {
       "bos": bos,
       "kelas1": kelas1,
@@ -87,17 +74,17 @@ class IncomeServices {
         headers: {"Content-Type": "application/json"},
         body: json.encode(requestData),
       );
-
       if (response.statusCode == 200) {
-        print("Data dengan id ${id} berhasil diupdate");
-        return IncomeModel.fromJson(json.decode(response.body));
+        print("Response: ${response.statusCode}");
+        print("Data dengan id $id berhasil diupdate");
+        return response.body;
       } else {
-        print("Failed to update data: ${response.statusCode}");
+        print("Response: ${response.statusCode}");
         print("Response body: ${response.body}");
         throw Exception("Failed to update data");
       }
     } catch (e) {
-      throw Exception("Failed to update data");
+      rethrow;
     }
   }
 
@@ -107,9 +94,10 @@ class IncomeServices {
       Uri.parse("$universalUrl/delete/$id"),
     );
     if (response.statusCode == 200) {
+      print("Response: ${response.statusCode}");
       print("Data dengan id $id berhasil dihapus");
     } else {
-      print("Failed to delete data: ${response.statusCode}");
+      print("Response: ${response.statusCode}");
       throw Exception("Failed to delete data");
     }
   }
@@ -119,9 +107,10 @@ class IncomeServices {
     final pdfUrl = "$universalUrl/$id/pdf";
     final response = await http.get(Uri.parse(pdfUrl));
     if (response.statusCode == 200) {
+      print("Response: ${response.statusCode}");
       await launchUrl(Uri.parse(pdfUrl));
     } else {
-      print("Failed to direct data: ${response.statusCode}");
+      print("Response: ${response.statusCode}");
       throw Exception("Failed to direct data");
     }
   }

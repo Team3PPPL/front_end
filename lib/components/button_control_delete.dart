@@ -75,7 +75,7 @@ buttonControlDelete(iconButton, Function apiMethod, String jenisData,
                       SnackBar(
                         backgroundColor: universalColors,
                         content: Text(
-                          "DATA $jenisData BERHASIL DIHAPUS",
+                          "DATA ${jenisData.toUpperCase()} BERHASIL DIHAPUS",
                           style: boldComponentFonts,
                         ),
                         duration: const Duration(seconds: 3),

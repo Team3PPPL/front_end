@@ -35,29 +35,29 @@ class _ListsPengeluaranInDecadePageState
   void initState() {
     super.initState();
     newListDataOutcome = outcomeServices.getAllDataOutcomeByDecadeId(
-        widget.outcomeModel.data[widget.indexData].id);
+        widget.outcomeModel.data![widget.indexData].id);
     newListTotalDataOutcome =
         totalOutcomeService.getAllDataTotalOutcomeByDecadeId(
-            widget.outcomeModel.data[widget.indexData].id);
+            widget.outcomeModel.data![widget.indexData].id);
   }
 
   // FUNCTION UNTUK MEMPERBARUI DATA SETIAP ADA PERUBAHAN YANG TERJADI
   void refreshData() async {
     await OutcomeServices().getAllDataOutcome();
     await TotalOutcomeServices().getAllDataTotalOutcomeByDecadeId(
-        widget.outcomeModel.data[widget.indexData].id);
+        widget.outcomeModel.data![widget.indexData].id);
     setState(() {
       newListDataOutcome = outcomeServices.getAllDataOutcomeByDecadeId(
-          widget.outcomeModel.data[widget.indexData].id);
+          widget.outcomeModel.data![widget.indexData].id);
       newListTotalDataOutcome =
           totalOutcomeService.getAllDataTotalOutcomeByDecadeId(
-              widget.outcomeModel.data[widget.indexData].id);
+              widget.outcomeModel.data![widget.indexData].id);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final selectedDataOutcome = widget.outcomeModel.data[widget.indexData];
+    final selectedDataOutcome = widget.outcomeModel.data![widget.indexData];
     return Scaffold(
       appBar: AppBar(
         backgroundColor: componentColors,
@@ -78,7 +78,7 @@ class _ListsPengeluaranInDecadePageState
           iconSize: 35,
           icon: const Icon(Icons.keyboard_arrow_left_rounded),
           onPressed: () {
-            Get.back();
+            Get.back(result: true);
           },
         ),
         iconTheme: const IconThemeData(color: Colors.white),
@@ -92,9 +92,10 @@ class _ListsPengeluaranInDecadePageState
               })
         ],
       ),
-      body:
-          // BASE LIST PENGELUARAN
-          Column(
+
+      // BASE LIST PENGELUARAN PADA DEKADE TERTENTU
+      body: ListView(
+        physics: const NeverScrollableScrollPhysics(),
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 15),
@@ -119,26 +120,32 @@ class _ListsPengeluaranInDecadePageState
 
           // BASE LIST DATA PENGELUARAN YANG TELAH DIINPUT
           Container(
+              // color: Colors.yellow,
               margin: const EdgeInsets.only(bottom: 15),
-              height: MediaQuery.of(context).size.height / 1.58,
+              height: MediaQuery.of(context).size.height / 1.49,
               child: FutureBuilder(
                   future: newListDataOutcome,
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
+                      return const Center(
+                          child: CircularProgressIndicator(
+                              color: componentColors));
                     } else if (snapshot.hasError) {
                       return Text(
                         "Error: ${snapshot.error}",
                         style: universalFonts,
                       );
-                    } else if (!snapshot.hasData) {
+                    } else if (snapshot.data!.cashouts.isEmpty) {
                       return Center(
                           child: Text(
                         "Ooops, belum ada data yang tersimpan dalam database",
                         style: universalFonts,
+                        textAlign: TextAlign.center,
                       ));
                     } else {
                       final getAllData = snapshot.data!;
+                      getAllData.cashouts
+                          .sort((a, b) => b.createdAt.compareTo(a.createdAt));
                       return ListView.builder(
                         shrinkWrap: true,
                         itemCount: getAllData.cashouts.length,
@@ -173,6 +180,9 @@ class _ListsPengeluaranInDecadePageState
                                             dateTimeFormat(getAllData
                                                 .cashouts[index].createdAt),
                                             style: universalFonts,
+                                          ),
+                                          const SizedBox(
+                                            height: 5,
                                           ),
                                         ],
                                       ),
@@ -245,16 +255,15 @@ class _ListsPengeluaranInDecadePageState
           FutureBuilder(
             future: newListTotalDataOutcome,
             builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting ||
-                  !snapshot.hasData) {
-                return baseTotalPengeluaran(context, "--");
-              } else if (snapshot.hasError) {
+              if (snapshot.hasError) {
                 return Center(
                   child: Text("Error: ${snapshot.error}"),
                 );
+              } else if (!snapshot.hasData) {
+                return baseTotalOutcome(context, "--");
               } else {
                 final getDataTotal = snapshot.data;
-                return baseTotalPengeluaran(
+                return baseTotalOutcome(
                     context, "${getDataTotal!["totalPengeluaran"]}");
               }
             },
@@ -265,7 +274,7 @@ class _ListsPengeluaranInDecadePageState
   }
 
   // FUNCTION UNTUK BASE UI DARI TOTAL PENGELUARAN
-  Align baseTotalPengeluaran(BuildContext context, String baseText) {
+  Align baseTotalOutcome(BuildContext context, String baseText) {
     return Align(
       alignment: Alignment.bottomCenter,
       child: Padding(

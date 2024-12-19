@@ -21,10 +21,11 @@ class EditCashOutPage extends StatefulWidget {
 
 class _EditCashOutPageState extends State<EditCashOutPage> {
   TextEditingController pengeluaranController = TextEditingController();
-  TextEditingController tanggalController = TextEditingController();
   String? selectedItem;
   String hintTanggal = "--";
   String hintText = "Jenis Pengeluaran";
+  late DateTime dateNow;
+  late DateTime currentDate;
 
   @override
   void initState() {
@@ -37,18 +38,26 @@ class _EditCashOutPageState extends State<EditCashOutPage> {
 
   // FUNCTION UNTUK MEMILIH TANGGAL MELALUI KALENDER
   Future<void> selectDate() async {
+    if (hintTanggal != "--") {
+      try {
+        dateNow = DateFormat("d MMMM yyyy", "id_ID").parse(hintTanggal);
+      } catch (e) {
+        dateNow = DateTime.now();
+      }
+    } else {
+      dateNow = DateTime.now();
+    }
+
     DateTime? setDate = await showDatePicker(
       context: context,
       locale: const Locale("id", "ID"),
-      initialDate: DateTime.now(),
-      initialDatePickerMode: DatePickerMode.year,
-      firstDate: DateTime(2023),
-      lastDate: DateTime(2050),
+      initialDate: dateNow,
+      currentDate: currentDate,
+      firstDate: DateTime(DateTime.now().year - 10),
+      lastDate: DateTime(DateTime.now().year + 10),
     );
     if (setDate != null) {
       setState(() {
-        tanggalController.text =
-            DateFormat("d MMMM yyyy", "id_ID").format(setDate);
         hintTanggal = DateFormat("d MMMM yyyy", "id_ID").format(setDate);
       });
     }
@@ -63,12 +72,12 @@ class _EditCashOutPageState extends State<EditCashOutPage> {
       if (allData.jenisPengeluaran.isNotEmpty) {
         setState(() {
           final getData = widget.dataModel;
-          selectedItem = allData.jenisPengeluaran;
+          // selectedItem = allData.jenisPengeluaran;
           pengeluaranController.text =
               getData.cashouts[widget.index].totalPengeluaran.toString();
-
-          tanggalController.text =
+          hintTanggal =
               dateTimeFormat(getData.cashouts[widget.index].createdAt);
+          currentDate = DateFormat("d MMMM yyyy", "id_ID").parse(hintTanggal);
         });
       }
     } catch (e) {
@@ -147,46 +156,16 @@ class _EditCashOutPageState extends State<EditCashOutPage> {
                             borderRadius: BorderRadius.circular(10),
                             border:
                                 Border.all(color: componentColors, width: 2)),
-                        child:
-                            // BASE DROPDOWN BUTTON YANG DAPAT MENAMPILKAN SELURUH JENIS PENGELUARAN
-                            DropdownButton<String>(
-                                value: selectedItem,
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 30),
-                                dropdownColor: universalColors,
-                                isExpanded: true,
-                                underline: Container(),
-                                alignment: Alignment.center,
-                                menuWidth:
-                                    MediaQuery.of(context).size.width / 1.19,
-                                hint: Text(
-                                  "",
-                                  style: boldComponentFonts,
-                                  textAlign: TextAlign.center,
-                                ),
-                                items: getPengeluaran.allPengeluaran.map((e) {
-                                  return DropdownMenuItem(
-                                    value: e,
-                                    child: Text(
-                                      e,
-                                      style: universalFonts,
-                                    ),
-                                  );
-                                }).toList(),
-                                selectedItemBuilder: (context) {
-                                  return getPengeluaran.allPengeluaran.map((e) {
-                                    return Center(
-                                        child: Text(
-                                      e,
-                                      style: boldComponentFonts,
-                                    ));
-                                  }).toList();
-                                },
-                                onChanged: (value) {
-                                  setState(() {
-                                    selectedItem = value!;
-                                  });
-                                })),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 30),
+                          child: Text(
+                            widget.dataModel.cashouts[widget.index]
+                                .jenisPengeluaran,
+                            style: boldComponentFonts,
+                            textAlign: TextAlign.center,
+                          ),
+                        )),
                     const SizedBox(
                       height: 20,
                     ),
@@ -288,24 +267,24 @@ class _EditCashOutPageState extends State<EditCashOutPage> {
                               width: 1.5,
                             ),
 
-                            // CONTROLLER INPUT TANGGAL PENGELUARAN
+                            // CONTAINER INPUT TANGGAL
                             Expanded(
-                              child: TextFormField(
-                                controller: tanggalController,
+                              child: Text(
+                                hintTanggal,
                                 style: boldComponentFonts,
-                                readOnly: true,
-                                decoration: InputDecoration(
-                                    isDense: true,
-                                    hintText: hintTanggal,
-                                    suffixIcon:
-                                        const Icon(Icons.calendar_month_sharp),
-                                    border: const OutlineInputBorder(
-                                        borderSide: BorderSide.none)),
-                                onTap: () {
-                                  selectDate();
-                                },
+                                textAlign: TextAlign.center,
                               ),
                             ),
+
+                            // ICON CALENDAR
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: IconButton(
+                                  icon: const Icon(Icons.calendar_month_sharp),
+                                  onPressed: () {
+                                    selectDate();
+                                  }),
+                            )
                           ],
                         ),
                       ),
@@ -331,16 +310,37 @@ class _EditCashOutPageState extends State<EditCashOutPage> {
                           )),
                         ),
                       ),
-                      onTap: () {
-                        Get.back();
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            backgroundColor: universalColors,
-                            content: Text("DATA BERHASIL DISIMPAN",
-                                style: universalFonts),
-                            duration: const Duration(seconds: 3),
-                          ),
-                        );
+                      onTap: () async {
+                        print("DECADE ID: ${widget.dataModel.id}");
+                        print(
+                            "Jenis pengeluaran: ${widget.dataModel.cashouts[widget.index].jenisPengeluaran}");
+                        print(pengeluaranController.text);
+                        try {
+                          // MELAKUKAN KONVERSI TERHADAP DATA DANA BOS YANG AWALNYA STRING MENJADI INTEGER
+                          int konversiPengeluaran = int.parse(
+                              pengeluaranController.text.replaceAll('.', ''));
+
+                          await OutcomeServices().updateDataPengeluaranInDecade(
+                              widget.dataModel.id,
+                              widget.dataModel.cashouts[widget.index]
+                                  .jenisPengeluaran,
+                              konversiPengeluaran);
+
+                          Get.back(result: true);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              backgroundColor: universalColors,
+                              content: Text(
+                                "DATA BERHASIL DITAMBAHKAN",
+                                style: boldComponentFonts,
+                              ),
+                              duration: const Duration(seconds: 3),
+                            ),
+                          );
+                        } catch (e, stackTrace) {
+                          print("Error: $e");
+                          print("Stack Trace: $stackTrace");
+                        }
                       },
                     )
                   ],

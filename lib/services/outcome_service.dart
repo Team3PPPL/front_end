@@ -29,7 +29,7 @@ class OutcomeServices {
       final listData = responseBody['data'];
       return DataModel.fromJson(listData);
     } else {
-      throw Exception("Failed to load data");
+      throw Exception("Failed to load data by decade");
     }
   }
 
@@ -43,7 +43,7 @@ class OutcomeServices {
       final listData = responseBody['data'];
       return CashoutModel.fromJson(listData);
     } else {
-      throw Exception("Failed to load data");
+      throw Exception("Failed to load data in decade $decadeId");
     }
   }
 
@@ -56,16 +56,19 @@ class OutcomeServices {
         headers: {"Content-Type": "application/json"},
         body: json.encode(requestData),
       );
+
       if (response.statusCode == 200) {
+        print("Response: ${response.statusCode}");
+        print("Data: ${response.body}");
         print("Berhasil menambahkan data baru");
-        return DataModel.fromJson(json.decode(response.body));
+        return response.body;
       } else {
-        print("Failed to post data: ${response.statusCode}");
+        print("Response: ${response.statusCode}");
         print("Response body: ${response.body}");
         throw Exception("Failed to post data");
       }
     } catch (e) {
-      throw Exception("Failed to add new data");
+      rethrow;
     }
   }
 
@@ -80,28 +83,37 @@ class OutcomeServices {
         body: json.encode(requestData),
       );
       if (response.statusCode == 200) {
+        print("Response: ${response.statusCode}");
+        print("Data: ${response.body}");
         print("Berhasil menambahkan data baru");
-        return CashoutModel.fromJson(json.decode(response.body));
+        return response.body;
+        // return CashoutModel.fromJson(json.decode(response.body));
       } else {
-        print("Failed to post data: ${response.statusCode}");
+        print("Response: ${response.statusCode}");
         print("Response body: ${response.body}");
         throw Exception("Failed to post data");
       }
     } catch (e) {
-      throw Exception("Failed to add new data");
+      rethrow;
     }
   }
 
   // FUNCTION UNTUK MENGUPDATE SALAH SATU DATA YANG TERSIMPAN DALAM DEKADE YANG DIPILIH
-  Future<void> updateDataPengeluaranInDecade(
-      int decadeId, String jenisPengeluaran) async {
+  Future updateDataPengeluaranInDecade(
+      int decadeId, String jenisPengeluaran, int totalPengeluaran) async {
+    Map<String, dynamic> requestData = {"totalPengeluaran": totalPengeluaran};
     final response = await http.put(
       Uri.parse("$universalUrl/update/$decadeId/cashout/$jenisPengeluaran"),
+      headers: {"Content-Type": "application/json"},
+      body: json.encode(requestData),
     );
     if (response.statusCode == 200) {
+      print("Response: ${response.statusCode}");
       print("Data dengan id $decadeId berhasil diupdate");
+      return response.body;
     } else {
-      print("Failed to update data: ${response.statusCode}");
+      print("Response: ${response.statusCode}");
+      print("Response body: ${response.body}");
       throw Exception("Failed to update data");
     }
   }
@@ -112,9 +124,10 @@ class OutcomeServices {
       Uri.parse("$universalUrl/delete/$decadeId"),
     );
     if (response.statusCode == 200) {
+      print("Response: ${response.statusCode}");
       print("Data dengan id $decadeId berhasil dihapus");
     } else {
-      print("Failed to delete data: ${response.statusCode}");
+      print("Response: ${response.statusCode}");
       throw Exception("Failed to delete data");
     }
   }
@@ -126,9 +139,12 @@ class OutcomeServices {
       Uri.parse("$universalUrl/delete/$decadeId/cashout/$jenisPengeluaran"),
     );
     if (response.statusCode == 200) {
-      print("Data dengan id $decadeId berhasil dihapus");
+      print("Response: ${response.statusCode}");
+      print(
+          "Data $jenisPengeluaran dari decade id ke-$decadeId berhasil dihapus");
     } else {
-      print("Failed to delete data: ${response.statusCode}");
+      print("Response: ${response.statusCode}");
+
       throw Exception("Failed to delete data");
     }
   }
@@ -138,9 +154,11 @@ class OutcomeServices {
     final pdfUrl = "$universalUrl/$decadeId/pdf";
     final response = await http.get(Uri.parse(pdfUrl));
     if (response.statusCode == 200) {
+      print("Response: ${response.statusCode}");
       await launchUrl(Uri.parse(pdfUrl));
     } else {
-      print("Failed to direct data: ${response.statusCode}");
+      print("Response: ${response.statusCode}");
+
       throw Exception("Failed to direct data");
     }
   }

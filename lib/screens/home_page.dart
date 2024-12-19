@@ -80,7 +80,7 @@ class _HomePageState extends State<HomePage> {
               } else if (snapshot.hasError) {
                 return Text("Error: ${snapshot.error}");
               } else {
-                final getDataPeriode = snapshot.data!.data.last;
+                final getDataPeriode = snapshot.data!.data!.last;
                 return baseFinance(
                     dateTimeFormat(getDataPeriode.decade), getDataPeriode);
               }
