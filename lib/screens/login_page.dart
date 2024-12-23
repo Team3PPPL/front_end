@@ -2,9 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 import 'package:pppl_apps/components/navbar.dart';
-import 'package:pppl_apps/constant/appColor.dart';
-import 'package:pppl_apps/constant/appFont.dart';
+import 'package:pppl_apps/constant/app_color.dart';
+import 'package:pppl_apps/constant/app_font.dart';
 import 'package:pppl_apps/services/firebase/auth_service.dart';
 
 class LoginPage extends StatefulWidget {
@@ -44,9 +45,21 @@ class _LoginPageState extends State<LoginPage> {
           context: context,
           builder: (context) {
             return CupertinoAlertDialog(
-              title: Text(
-                "Login Failed",
-                style: boldComponentFonts,
+              title: Column(
+                children: [
+                  LottieBuilder.network(
+                    width: MediaQuery.of(context).size.width / 10,
+                    "https://lottie.host/5b55eb2b-b879-4a22-b89f-f06321908aea/U0J6YE0rj1.json",
+                    repeat: false,
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  Text(
+                    "Login Failed",
+                    style: titleFonts,
+                  ),
+                ],
               ),
               content: Column(
                 children: [
@@ -54,7 +67,7 @@ class _LoginPageState extends State<LoginPage> {
                     color: Colors.black,
                   ),
                   Text(
-                    "Silahkan Masukkan Data E-mail dan Password dengan Benar",
+                    "Silahkan Masukkan username dan password dengan Benar",
                     style: universalFonts,
                   ),
                 ],
@@ -74,6 +87,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Form(
         key: validateDataForm,
         child: Column(
@@ -194,6 +208,8 @@ class _LoginPageState extends State<LoginPage> {
                     ],
                   ),
                 ),
+
+                // LOGO APLIKASI PADA BAGIAN ATAS
                 AspectRatio(
                     aspectRatio: 16 / 6, child: Image.asset("assets/logo.png"))
               ],

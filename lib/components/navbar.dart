@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:pppl_apps/constant/appColor.dart';
-import 'package:pppl_apps/constant/appFont.dart';
+import 'package:pppl_apps/constant/app_color.dart';
+import 'package:pppl_apps/constant/app_font.dart';
 import 'package:pppl_apps/screens/home_page.dart';
 import 'package:pppl_apps/screens/cash%20in/income_page.dart';
 import 'package:pppl_apps/screens/cash%20out/outcome_page.dart';
@@ -51,16 +51,20 @@ class _NavBarState extends State<NavBar> {
                 ),
                 selectedColor: Colors.white),
             BottomBarItem(
-                icon: const Icon(Icons.trending_up),
-                // ? const Icon(CupertinoIcons.arrow_down_square_fill)
-                // : const Icon(CupertinoIcons.arrow_down_square),
+                icon: const ImageIcon(
+                  AssetImage("assets/income_icon.png"),
+                  size: 35,
+                ),
                 title: Text("Cash In",
                     style: selectedPage == 1
                         ? whiteComponentFonts
                         : unselectedComponentFonts),
                 selectedColor: Colors.white),
             BottomBarItem(
-                icon: const Icon(Icons.trending_down),
+                icon: const ImageIcon(
+                  AssetImage("assets/outcome_icon.png"),
+                  size: 35,
+                ),
                 title: Text("Cash Out",
                     style: selectedPage == 2
                         ? whiteComponentFonts

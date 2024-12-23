@@ -3,9 +3,10 @@ import 'package:intl/intl.dart';
 import 'package:pppl_apps/components/button_control_delete_decade.dart';
 import 'package:pppl_apps/components/button_control_direction.dart';
 import 'package:pppl_apps/components/button_text_direction.dart';
+import 'package:pppl_apps/components/empty_data.dart';
 import 'package:pppl_apps/components/format_currency_string.dart';
-import 'package:pppl_apps/constant/appColor.dart';
-import 'package:pppl_apps/constant/appFont.dart';
+import 'package:pppl_apps/constant/app_color.dart';
+import 'package:pppl_apps/constant/app_font.dart';
 import 'package:pppl_apps/models/outcome_model.dart';
 import 'package:pppl_apps/screens/cash%20out/input_decade_pengeluaran.dart';
 import 'package:pppl_apps/screens/cash%20out/list_pengeluaran_in_decade_page.dart';
@@ -51,6 +52,7 @@ class _OutcomePageState extends State<OutcomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: componentColors,
         title: Text(
@@ -76,7 +78,7 @@ class _OutcomePageState extends State<OutcomePage> {
                   children: [
                     Text(
                       "Nama / Keterangan",
-                      style: universalFonts,
+                      style: boldComponentFonts,
                     ),
                     Text("Cash Out", style: universalFonts),
                   ],
@@ -101,20 +103,19 @@ class _OutcomePageState extends State<OutcomePage> {
                         "Error: ${snapshot.error}",
                         style: universalFonts,
                       );
-                    } else if (!snapshot.hasData) {
-                      return Center(
-                          child: Text(
-                        "Ooops, belum ada data yang tersimpan dalam database",
-                        style: universalFonts,
-                      ));
+                    } else if (snapshot.data!.data.isEmpty) {
+                      return emptyDataAnnounce(context);
                     } else {
                       final getAllData = snapshot.data!;
-                      getAllData.data!.sort((a, b) => b.id.compareTo(a.id));
+                      getAllData.data.sort((a, b) => b.id.compareTo(a
+                          .id)); // MENGURUTKAN DATA BERDASARKAN ID YANG PALING TERAKHIR YANG MASUK KE DATABASE
+
+                      // CONTAINER YANG BERISIKAN DATA DARI DATABASE
                       return ListView.builder(
                         shrinkWrap: true,
-                        itemCount: getAllData.data!.length,
+                        itemCount: getAllData.data.length,
                         itemBuilder: (context, index) {
-                          final getData = getAllData.data![index];
+                          final getData = getAllData.data[index];
                           return FutureBuilder(
                             future: totalOutcomeService
                                 .getAllDataTotalOutcomeByDecadeId(getData.id),
@@ -145,6 +146,8 @@ class _OutcomePageState extends State<OutcomePage> {
           const SizedBox(
             height: 10,
           ),
+
+          // BASE TOTAL PENGELUARAN DARI SELURUH PERIODE
           FutureBuilder(
             future: newTotalDataOutcome,
             builder: (context, snapshot) {
@@ -194,10 +197,6 @@ class _OutcomePageState extends State<OutcomePage> {
                       "- ${formatCurrencyString(totalPengeluaran)}",
                       style: universalFonts,
                     ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    Text("${getData.id}")
                   ],
                 ),
                 Row(

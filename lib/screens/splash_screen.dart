@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pppl_apps/constant/appFont.dart';
+import 'package:pppl_apps/constant/app_font.dart';
 import 'package:pppl_apps/services/firebase/auth_gate.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -33,12 +33,12 @@ class _SplashScreenState extends State<SplashScreen> {
             children: [
               // LOGO APLIKASI
               AspectRatio(
-                  aspectRatio: 16 / 7, child: Image.asset("assets/logo.png")),
+                  aspectRatio: 16 / 9, child: Image.asset("assets/logo.png")),
               const SizedBox(
                 height: 50,
               ),
 
-              // NAMA APLIKASI
+              // NAMA MITRA
               Text(
                 "Tansyitul Muta'allimiin",
                 style: titleFonts,

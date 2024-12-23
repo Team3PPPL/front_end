@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pppl_apps/components/button_print.dart';
-import 'package:pppl_apps/constant/appColor.dart';
-import 'package:pppl_apps/constant/appFont.dart';
+import 'package:pppl_apps/constant/app_color.dart';
+import 'package:pppl_apps/constant/app_font.dart';
 import 'package:pppl_apps/models/income_model.dart';
 import 'package:pppl_apps/services/income_services.dart';
 
@@ -38,9 +38,9 @@ class DetailIncomePage extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                         vertical: 10, horizontal: 20),
-                    child:
-                        // MENAMPILKAN PERIODE KEUANGAN DARI DATA YANG DIPILIH
-                        Column(
+
+                    // MENAMPILKAN PERIODE KEUANGAN DARI DATA YANG DIPILIH
+                    child: Column(
                       children: [
                         Text(
                           "Laporan Pemasukan",

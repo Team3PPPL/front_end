@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
-import 'package:pppl_apps/constant/appColor.dart';
-import 'package:pppl_apps/constant/appFont.dart';
+import 'package:pppl_apps/constant/app_color.dart';
+import 'package:pppl_apps/constant/app_font.dart';
 import 'package:pppl_apps/components/format_currency_controller.dart';
-import 'package:pppl_apps/constant/list_pengeluaran.dart' as getPengeluaran;
+import 'package:pppl_apps/constant/list_pengeluaran.dart' as get_pengeluaran;
 import 'package:pppl_apps/services/outcome_service.dart';
 
 class CashOutPage extends StatefulWidget {
@@ -58,9 +58,8 @@ class _CashOutPageState extends State<CashOutPage> {
 
   @override
   Widget build(BuildContext context) {
-    double widthDivider =
-        MediaQuery.of(context).size.width / 25; // MEMBERIKAN UKURAN YANG PASTI
-    Intl.defaultLocale = 'id';
+    // MEMBERIKAN UKURAN DEFAULT YANG PASTI
+    double widthDivider = MediaQuery.of(context).size.width / 25;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -81,9 +80,10 @@ class _CashOutPageState extends State<CashOutPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(30),
+
+        // BASE CONTAINER INPUT PENGELUARAN
         child: Column(
           children: [
-            // BASE CONTAINER INPUT PENGELUARAN
             Container(
               decoration: BoxDecoration(
                 color: universalColors,
@@ -129,46 +129,45 @@ class _CashOutPageState extends State<CashOutPage> {
                             borderRadius: BorderRadius.circular(10),
                             border:
                                 Border.all(color: componentColors, width: 2)),
-                        child:
-                            // BASE DROPDOWN BUTTON YANG DAPAT MENAMPILKAN SELURUH JENIS PENGELUARAN
-                            DropdownButton(
-                                value: selectedItem,
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: widthDivider),
-                                dropdownColor: universalColors,
-                                isExpanded: true,
-                                underline: Container(),
-                                alignment: Alignment.center,
-                                menuWidth:
-                                    MediaQuery.of(context).size.width / 1.19,
-                                hint: Text(
-                                  "JENIS PENGELUARAN",
-                                  style: boldComponentFonts,
-                                  textAlign: TextAlign.center,
+
+                        // BASE DROPDOWN BUTTON YANG DAPAT MENAMPILKAN SELURUH JENIS PENGELUARAN
+                        child: DropdownButton(
+                            value: selectedItem,
+                            padding: EdgeInsets.symmetric(
+                                vertical: 10, horizontal: widthDivider),
+                            dropdownColor: universalColors,
+                            isExpanded: true,
+                            underline: Container(),
+                            alignment: Alignment.center,
+                            menuWidth: MediaQuery.of(context).size.width / 1.19,
+                            hint: Text(
+                              "JENIS PENGELUARAN",
+                              style: boldComponentFonts,
+                              textAlign: TextAlign.center,
+                            ),
+                            items: get_pengeluaran.allPengeluaran.map((e) {
+                              return DropdownMenuItem(
+                                value: e,
+                                child: Text(
+                                  e,
+                                  style: universalFonts,
                                 ),
-                                items: getPengeluaran.allPengeluaran.map((e) {
-                                  return DropdownMenuItem(
-                                    value: e,
+                              );
+                            }).toList(),
+                            selectedItemBuilder: (context) {
+                              return get_pengeluaran.allPengeluaran.map((e) {
+                                return Center(
                                     child: Text(
-                                      e,
-                                      style: universalFonts,
-                                    ),
-                                  );
-                                }).toList(),
-                                selectedItemBuilder: (context) {
-                                  return getPengeluaran.allPengeluaran.map((e) {
-                                    return Center(
-                                        child: Text(
-                                      e,
-                                      style: boldComponentFonts,
-                                    ));
-                                  }).toList();
-                                },
-                                onChanged: (value) {
-                                  setState(() {
-                                    selectedItem = value!;
-                                  });
-                                })),
+                                  e,
+                                  style: boldComponentFonts,
+                                ));
+                              }).toList();
+                            },
+                            onChanged: (value) {
+                              setState(() {
+                                selectedItem = value!;
+                              });
+                            })),
                     const SizedBox(
                       height: 20,
                     ),
@@ -279,7 +278,7 @@ class _CashOutPageState extends State<CashOutPage> {
                               ),
                             ),
 
-                            // ICON CALENDAR
+                            // ICON KALENDER UNTUK MEMILIH TANGGAL PENGELUARAN
                             Align(
                               alignment: Alignment.centerRight,
                               child: IconButton(
@@ -354,7 +353,6 @@ class _CashOutPageState extends State<CashOutPage> {
                               konversiPengeluaran);
 
                           Get.back(result: true);
-
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               backgroundColor: universalColors,

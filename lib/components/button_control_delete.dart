@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pppl_apps/constant/appColor.dart';
-import 'package:pppl_apps/constant/appFont.dart';
+import 'package:pppl_apps/constant/app_color.dart';
+import 'package:pppl_apps/constant/app_font.dart';
 
 buttonControlDelete(iconButton, Function apiMethod, String jenisData,
     Function refreshData, context) {
@@ -30,19 +30,25 @@ buttonControlDelete(iconButton, Function apiMethod, String jenisData,
           builder: (context) {
             return CupertinoAlertDialog(
               // BAGIAN ATAS ALERT DIALOG
-              title: Row(
+              title: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Icon(
-                    Icons.warning,
+                    CupertinoIcons.exclamationmark_circle,
                     color: Colors.red,
+                    size: 70,
+                  ),
+                  const SizedBox(
+                    height: 10,
                   ),
                   Text(
-                    "PERINGATAN",
+                    "Apakah Anda Yakin ?",
                     style: titleFonts,
                   )
                 ],
               ),
+
+              // ISI DARI ALERT DIALOG
               content: Column(
                 children: [
                   const Divider(

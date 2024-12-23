@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pppl_apps/components/list_rekapitulasi_ui.dart';
 import 'package:pppl_apps/constant/about_us_content.dart';
-import 'package:pppl_apps/constant/appColor.dart';
-import 'package:pppl_apps/constant/appFont.dart';
+import 'package:pppl_apps/constant/app_color.dart';
+import 'package:pppl_apps/constant/app_font.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -10,6 +10,7 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: componentColors,
         toolbarHeight: 0,

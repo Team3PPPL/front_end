@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pppl_apps/constant/appColor.dart';
+import 'package:pppl_apps/constant/app_color.dart';
 
 buttonControlDirection(iconButton, direction, Function refreshMethod, context) {
   return GestureDetector(

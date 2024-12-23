@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:pppl_apps/components/button_control_delete_decade.dart';
 import 'package:pppl_apps/components/button_control_direction.dart';
 import 'package:pppl_apps/components/button_text_direction.dart';
+import 'package:pppl_apps/components/empty_data.dart';
 import 'package:pppl_apps/components/format_currency_string.dart';
-import 'package:pppl_apps/constant/appColor.dart';
-import 'package:pppl_apps/constant/appFont.dart';
+import 'package:pppl_apps/constant/app_color.dart';
+import 'package:pppl_apps/constant/app_font.dart';
 import 'package:pppl_apps/models/income_model.dart';
 import 'package:pppl_apps/screens/cash%20in/cash_in_page.dart';
 import 'package:pppl_apps/screens/cash%20in/detail_income_page.dart';
@@ -45,6 +46,7 @@ class _IncomePageState extends State<IncomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: componentColors,
         title: Text(
@@ -70,7 +72,7 @@ class _IncomePageState extends State<IncomePage> {
                   children: [
                     Text(
                       "Nama / Keterangan",
-                      style: universalFonts,
+                      style: boldComponentFonts,
                     ),
                     Text("Cash In", style: universalFonts),
                   ],
@@ -78,12 +80,12 @@ class _IncomePageState extends State<IncomePage> {
               ),
             ),
           ),
+
+          // BASE LIST DATA PEMASUKAN YANG TELAH DIINPUT
           Container(
               margin: const EdgeInsets.only(bottom: 15),
               height: MediaQuery.of(context).size.height / 1.68,
-              child:
-                  // BASE LIST DATA PEMASUKAN YANG TELAH DIINPUT
-                  FutureBuilder(
+              child: FutureBuilder(
                 future: newDataIncome,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
@@ -97,14 +99,13 @@ class _IncomePageState extends State<IncomePage> {
                       style: universalFonts,
                     );
                   } else if (snapshot.data!.isEmpty) {
-                    return Center(
-                        child: Text(
-                      "Ooops, belum ada data yang tersimpan dalam database",
-                      style: universalFonts,
-                    ));
+                    return emptyDataAnnounce(context);
                   } else {
                     final getAllData = snapshot.data;
-                    getAllData!.sort((a, b) => b.id.compareTo(a.id));
+                    getAllData!.sort((a, b) => b.id.compareTo(a
+                        .id)); // MENGURUTKAN DATA BERDASARKAN ID YANG PALING TERAKHIR YANG MASUK KE DATABASE
+
+                    // CONTAINER YANG BERISIKAN DATA DARI DATABASE
                     return ListView.builder(
                         shrinkWrap: true,
                         itemCount: getAllData.length,
@@ -131,11 +132,15 @@ class _IncomePageState extends State<IncomePage> {
                   }
                 },
               )),
+
+          // TOMBOL CASH IN UNTUK MENGINPUT DATA BARU
           buttonDirection(
               "Cash In", const CashInPage(), () => refreshData(), context),
           const SizedBox(
             height: 10,
           ),
+
+          // BASE TOTAL PEMASUKAN DARI SELURUH PERIODE
           FutureBuilder(
             future: newTotalDataIncome,
             builder: (context, snapshot) {
@@ -160,9 +165,9 @@ class _IncomePageState extends State<IncomePage> {
   // FUNCTION UNTUK BASE UI DARI LIST PEMASUKAN
   Column baseListIncome(
       IncomeModel getData, String totalPemasukan, getTotalIncome) {
+    // BASE DARI SETIAP DATA PEMASUKAN YANG DIINPUT
     return Column(
       children: [
-        // BASE DARI SETIAP DATA PEMASUKAN YANG DIINPUT
         Container(
           color: universalColors,
           child: Padding(

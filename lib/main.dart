@@ -19,16 +19,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ],
-      supportedLocales: const [
-        Locale('id', 'ID'),
-        Locale('en', 'US'),
-      ],
-      theme: ThemeData(useMaterial3: true),
-      home: const SplashScreen(),
-    );
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+        ],
+        supportedLocales: const [
+          Locale('id', 'ID'),
+          Locale('en', 'US'),
+        ],
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(useMaterial3: true),
+        home: const SplashScreen());
   }
 }

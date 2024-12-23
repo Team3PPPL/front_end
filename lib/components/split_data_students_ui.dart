@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:pppl_apps/constant/appColor.dart';
-import 'package:pppl_apps/constant/appFont.dart';
+import 'package:pppl_apps/constant/app_color.dart';
+import 'package:pppl_apps/constant/app_font.dart';
 
 class SplitDataStudentsUI extends StatefulWidget {
   int jmlhSiswaLaki;
@@ -16,6 +16,7 @@ class SplitDataStudentsUI extends StatefulWidget {
 class _SplitDataStudentsUIState extends State<SplitDataStudentsUI> {
   @override
   Widget build(BuildContext context) {
+    // BASE REKAPITULASI SISWA
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(

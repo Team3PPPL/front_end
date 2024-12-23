@@ -45,6 +45,7 @@ dependencies:
   url_launcher: ^6.3.1
   firebase_auth: ^5.3.4
   firebase_core: ^3.8.1
+  lottie: ^3.2.0
 
 dev_dependencies:
   flutter_test:
@@ -56,6 +57,14 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^4.0.0
+  flutter_launcher_icons: ^0.14.2
+  
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/logo_luar.png"
+  adaptive_icon_background: "#ffffff"
+  adaptive_icon_foreground: "assets/logo_luar.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

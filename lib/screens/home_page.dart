@@ -5,8 +5,7 @@ import 'package:pppl_apps/components/all_data_students_ui.dart';
 import 'package:pppl_apps/components/format_currency_string.dart';
 import 'package:pppl_apps/components/format_date_string.dart';
 import 'package:pppl_apps/components/split_data_students_ui.dart';
-import 'package:pppl_apps/constant/appColor.dart';
-import 'package:pppl_apps/constant/appFont.dart';
+import 'package:pppl_apps/constant/app_font.dart';
 import 'package:pppl_apps/models/outcome_model.dart';
 import 'package:pppl_apps/services/income_services.dart';
 import 'package:pppl_apps/services/outcome_service.dart';
@@ -74,15 +73,31 @@ class _HomePageState extends State<HomePage> {
           FutureBuilder(
             future: OutcomeServices().getAllDataOutcome(),
             builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting ||
-                  !snapshot.hasData) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
                 return baseFinance("--", DataModel.empty());
+              } else if (snapshot.data!.data.isEmpty || !snapshot.hasData) {
+                return FutureBuilder(
+                  future: IncomeServices().getAllDataIncome(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting ||
+                        snapshot.data!.isEmpty ||
+                        !snapshot.hasData) {
+                      return baseFinance("--", DataModel.empty());
+                    } else if (snapshot.hasError) {
+                      return Text("Error: ${snapshot.error}");
+                    } else {
+                      final getPeriodeIncome = snapshot.data!.last.createdAt;
+                      return baseFinance(
+                          dateTimeFormat(getPeriodeIncome), DataModel.empty());
+                    }
+                  },
+                );
               } else if (snapshot.hasError) {
                 return Text("Error: ${snapshot.error}");
               } else {
-                final getDataPeriode = snapshot.data!.data!.last;
-                return baseFinance(
-                    dateTimeFormat(getDataPeriode.decade), getDataPeriode);
+                final getPeriodeOutcome = snapshot.data!.data.last;
+                return baseFinance(dateTimeFormat(getPeriodeOutcome.createdAt),
+                    getPeriodeOutcome);
               }
             },
           ),
@@ -117,13 +132,14 @@ class _HomePageState extends State<HomePage> {
       future: TotalIncomeServices().getAllDataTotalIncomeByDecadeID(decadeId),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting ||
-            !snapshot.hasData) {
+            !snapshot.hasData ||
+            snapshot.data == null) {
           return baseFinancePemasukan("0");
         } else if (snapshot.hasError) {
           return Text("Error: ${snapshot.error}");
         } else {
           final getData = snapshot.data;
-          return baseFinancePemasukan("${getData!["totalPemasukan"]}");
+          return baseFinancePemasukan("${getData!["totalPemasukan"] ?? 0}");
         }
       },
     );
@@ -135,13 +151,14 @@ class _HomePageState extends State<HomePage> {
       future: TotalOutcomeServices().getAllDataTotalOutcomeByDecadeId(decadeId),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting ||
-            !snapshot.hasData) {
+            !snapshot.hasData ||
+            snapshot.data == null) {
           return baseFinancePengeluaran("0");
         } else if (snapshot.hasError) {
           return Text("Error: ${snapshot.error}");
         } else {
           final getData = snapshot.data;
-          return baseFinancePengeluaran("${getData!["totalPengeluaran"]}");
+          return baseFinancePengeluaran("${getData!["totalPengeluaran"] ?? 0}");
         }
       },
     );
@@ -153,13 +170,13 @@ class _HomePageState extends State<HomePage> {
       children: [
         // BASE CONTAINER PERIODE
         monitoredPeriode(periodeFinance),
-
         const Padding(
           padding: EdgeInsets.symmetric(vertical: 5),
           child: Divider(
             color: Colors.black,
           ),
         ),
+
         // BASE CONTAINER FINANCE
         Container(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
@@ -177,7 +194,7 @@ class _HomePageState extends State<HomePage> {
                 height: 30,
               ),
 
-              // BASE CONTAINER MENAMPILKAN TOTAL PEMASUKAN DAN PENGELUARAN
+              // BASE CONTAINER MENAMPILKAN TOTAL PEMASUKAN
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -186,7 +203,9 @@ class _HomePageState extends State<HomePage> {
                     future: IncomeServices().getAllDataIncome(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting ||
-                          !snapshot.hasData) {
+                          !snapshot.hasData ||
+                          snapshot.data == null ||
+                          snapshot.data!.isEmpty) {
                         return monitoredPemasukan(0);
                       } else if (snapshot.hasError) {
                         return Text("Error: ${snapshot.error}");
@@ -215,12 +234,12 @@ class _HomePageState extends State<HomePage> {
       children: [
         Row(
           children: [
-            const CircleAvatar(
+            CircleAvatar(
               radius: 13,
-              backgroundColor: universalColors,
-              child: Icon(
-                Icons.arrow_upward,
-                color: componentColors,
+              backgroundColor: Colors.green[700],
+              child: const Icon(
+                Icons.arrow_downward,
+                color: Colors.white,
                 size: 19,
               ),
             ),
@@ -259,10 +278,10 @@ class _HomePageState extends State<HomePage> {
           children: [
             CircleAvatar(
               radius: 13,
-              backgroundColor: Colors.red[200],
-              child: Icon(
-                Icons.arrow_downward,
-                color: Colors.red[800],
+              backgroundColor: Colors.red[700],
+              child: const Icon(
+                Icons.arrow_upward,
+                color: Colors.white,
                 size: 19,
               ),
             ),

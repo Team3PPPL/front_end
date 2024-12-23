@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:pppl_apps/constant/appColor.dart';
-import 'package:pppl_apps/constant/appFont.dart';
+import 'package:pppl_apps/constant/app_color.dart';
+import 'package:pppl_apps/constant/app_font.dart';
 import 'package:pppl_apps/constant/list_rekapitulasi.dart';
 import 'package:pppl_apps/models/rekap_model.dart';
 
@@ -51,7 +51,7 @@ class _ListRekapitulasiUIState extends State<ListRekapitulasiUI> {
             height: 10,
           ),
 
-          // BASE UI REKAPITULASI
+          // BASE REKAPITULASI
           SizedBox(
             height: MediaQuery.of(context).size.width * 1.8,
             child: PageView.builder(

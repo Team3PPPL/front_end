@@ -3,11 +3,10 @@ import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:pppl_apps/components/format_date_string.dart';
-import 'package:pppl_apps/constant/appColor.dart';
-import 'package:pppl_apps/constant/appFont.dart';
+import 'package:pppl_apps/constant/app_color.dart';
+import 'package:pppl_apps/constant/app_font.dart';
 import 'package:pppl_apps/components/format_currency_controller.dart';
 import 'package:pppl_apps/models/outcome_model.dart';
-import 'package:pppl_apps/constant/list_pengeluaran.dart' as getPengeluaran;
 import 'package:pppl_apps/services/outcome_service.dart';
 
 class EditCashOutPage extends StatefulWidget {
@@ -72,7 +71,6 @@ class _EditCashOutPageState extends State<EditCashOutPage> {
       if (allData.jenisPengeluaran.isNotEmpty) {
         setState(() {
           final getData = widget.dataModel;
-          // selectedItem = allData.jenisPengeluaran;
           pengeluaranController.text =
               getData.cashouts[widget.index].totalPengeluaran.toString();
           hintTanggal =
@@ -108,9 +106,10 @@ class _EditCashOutPageState extends State<EditCashOutPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(30),
+
+        // BASE CONTAINER INPUT PENGELUARAN
         child: Column(
           children: [
-            // BASE CONTAINER INPUT PENGELUARAN
             Container(
               decoration: BoxDecoration(
                 color: universalColors,
@@ -276,7 +275,7 @@ class _EditCashOutPageState extends State<EditCashOutPage> {
                               ),
                             ),
 
-                            // ICON CALENDAR
+                            // ICON KALENDER UNTUK MEMILIH TANGGAL PENGELUARAN
                             Align(
                               alignment: Alignment.centerRight,
                               child: IconButton(

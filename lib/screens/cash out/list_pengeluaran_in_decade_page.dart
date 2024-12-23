@@ -3,10 +3,11 @@ import 'package:get/get.dart';
 import 'package:pppl_apps/components/button_control_delete.dart';
 import 'package:pppl_apps/components/button_control_direction.dart';
 import 'package:pppl_apps/components/button_text_direction.dart';
+import 'package:pppl_apps/components/empty_data.dart';
 import 'package:pppl_apps/components/format_currency_string.dart';
 import 'package:pppl_apps/components/format_date_string.dart';
-import 'package:pppl_apps/constant/appColor.dart';
-import 'package:pppl_apps/constant/appFont.dart';
+import 'package:pppl_apps/constant/app_color.dart';
+import 'package:pppl_apps/constant/app_font.dart';
 import 'package:pppl_apps/models/outcome_model.dart';
 import 'package:pppl_apps/screens/cash%20out/cash_out_page.dart';
 import 'package:pppl_apps/screens/cash%20out/edit_cash_out_page.dart';
@@ -59,6 +60,7 @@ class _ListsPengeluaranInDecadePageState
   Widget build(BuildContext context) {
     final selectedDataOutcome = widget.outcomeModel.data![widget.indexData];
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: componentColors,
         title: Column(
@@ -93,7 +95,7 @@ class _ListsPengeluaranInDecadePageState
         ],
       ),
 
-      // BASE LIST PENGELUARAN PADA DEKADE TERTENTU
+      // BASE LIST DATA PENGELUARAN PADA DEKADE TERTENTU
       body: ListView(
         physics: const NeverScrollableScrollPhysics(),
         children: [
@@ -120,7 +122,6 @@ class _ListsPengeluaranInDecadePageState
 
           // BASE LIST DATA PENGELUARAN YANG TELAH DIINPUT
           Container(
-              // color: Colors.yellow,
               margin: const EdgeInsets.only(bottom: 15),
               height: MediaQuery.of(context).size.height / 1.49,
               child: FutureBuilder(
@@ -136,16 +137,11 @@ class _ListsPengeluaranInDecadePageState
                         style: universalFonts,
                       );
                     } else if (snapshot.data!.cashouts.isEmpty) {
-                      return Center(
-                          child: Text(
-                        "Ooops, belum ada data yang tersimpan dalam database",
-                        style: universalFonts,
-                        textAlign: TextAlign.center,
-                      ));
+                      return emptyDataAnnounce(context);
                     } else {
                       final getAllData = snapshot.data!;
-                      getAllData.cashouts
-                          .sort((a, b) => b.createdAt.compareTo(a.createdAt));
+
+                      // CONTAINER YANG BERISIKAN DATA DARI DATABASE
                       return ListView.builder(
                         shrinkWrap: true,
                         itemCount: getAllData.cashouts.length,
@@ -252,6 +248,8 @@ class _ListsPengeluaranInDecadePageState
           const SizedBox(
             height: 10,
           ),
+
+          // BASE TOTAL PENGELUARAN PADA PERIODE TERSEBUT
           FutureBuilder(
             future: newListTotalDataOutcome,
             builder: (context, snapshot) {

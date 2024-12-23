@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:pppl_apps/constant/appColor.dart';
-import 'package:pppl_apps/constant/appFont.dart';
+import 'package:pppl_apps/constant/app_color.dart';
+import 'package:pppl_apps/constant/app_font.dart';
 import 'package:pppl_apps/services/outcome_service.dart';
 
 class InputDecadePengeluaranPage extends StatefulWidget {
@@ -74,8 +74,9 @@ class _InputDecadePengeluaranPageState
         ),
         body: Padding(
           padding: const EdgeInsets.all(30),
+
+          // BASE INPUT DECADE PENGELUARAN
           child: Column(children: [
-            // BASE INPUT DECADE PENGELUARAN
             Container(
                 decoration: BoxDecoration(
                   color: universalColors,
@@ -153,7 +154,7 @@ class _InputDecadePengeluaranPageState
                                 ),
                               ),
 
-                              // ICON CALENDAR
+                              // ICON KALENDER
                               Align(
                                 alignment: Alignment.centerRight,
                                 child: IconButton(

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
-import 'package:pppl_apps/constant/appColor.dart';
-import 'package:pppl_apps/constant/appFont.dart';
+import 'package:pppl_apps/constant/app_color.dart';
+import 'package:pppl_apps/constant/app_font.dart';
 import 'package:pppl_apps/components/format_currency_controller.dart';
 import 'package:pppl_apps/services/income_services.dart';
 
@@ -77,8 +77,8 @@ class _CashInPageState extends State<CashInPage> {
 
   @override
   Widget build(BuildContext context) {
-    double widthDivider =
-        MediaQuery.of(context).size.width / 20; // MEMBERIKAN UKURAN YANG PASTI
+    // MEMBERIKAN UKURAN DEFAULT YANG PASTI
+    double widthDivider = MediaQuery.of(context).size.width / 20;
     Intl.defaultLocale = 'id';
     return Scaffold(
         backgroundColor: Colors.white,
@@ -100,9 +100,9 @@ class _CashInPageState extends State<CashInPage> {
         ),
         body: Padding(
           padding: const EdgeInsets.all(30),
-          child:
-              // BASE CONTAINER INPUT PEMASUKAN
-              Container(
+
+          // BASE CONTAINER INPUT PEMASUKAN
+          child: Container(
             decoration: BoxDecoration(
               color: universalColors,
               boxShadow: const [
@@ -117,9 +117,9 @@ class _CashInPageState extends State<CashInPage> {
             ),
             child: Padding(
               padding: const EdgeInsets.all(20),
-              child:
-                  // CONTAINER YANG BERISIKAN ITEM PEMASUKAN
-                  ListView(
+
+              // CONTAINER YANG BERISIKAN ITEM PEMASUKAN
+              child: ListView(
                 children: [
                   Column(
                     children: [
@@ -353,7 +353,7 @@ class _CashInPageState extends State<CashInPage> {
                                 ),
                               ),
 
-                              // ICON CALENDAR
+                              // ICON KALENDER
                               Align(
                                 alignment: Alignment.centerRight,
                                 child: IconButton(

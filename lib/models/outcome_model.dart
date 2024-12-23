@@ -18,16 +18,19 @@ class OutcomeModel {
 class DataModel {
   int id;
   DateTime decade;
+  DateTime createdAt;
   List<CashoutModel> cashouts;
 
   DataModel({
     required this.id,
     required this.decade,
+    required this.createdAt,
     required this.cashouts,
   });
 
   factory DataModel.empty() {
-    return DataModel(id: 0, decade: DateTime.now(), cashouts: []);
+    return DataModel(
+        id: 0, decade: DateTime.now(), createdAt: DateTime.now(), cashouts: []);
   }
 
   factory DataModel.fromJson(Map<String, dynamic> json) {
@@ -38,6 +41,8 @@ class DataModel {
         id: json["id"] ?? "Data tidak memiliki id",
         decade: DateTime.parse(
             json["decade"] ?? "Data tidak memiliki decade pengeluaran"),
+        createdAt: DateTime.parse(
+            json["createdAt"] ?? "Data tidak memiliki decade pengeluaran"),
         cashouts: listCashout);
   }
 }

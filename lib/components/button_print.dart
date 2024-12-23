@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:pppl_apps/constant/appColor.dart';
-import 'package:pppl_apps/constant/appFont.dart';
+import 'package:pppl_apps/constant/app_color.dart';
+import 'package:pppl_apps/constant/app_font.dart';
 
 buttonPrint(Function apiMethod, context) {
   return GestureDetector(
