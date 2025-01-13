@@ -51,121 +51,122 @@ class _OutcomePageState extends State<OutcomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: componentColors,
-        title: Text(
-          "PENGELUARAN",
-          style: whiteTitleFonts,
-        ),
-        centerTitle: true,
-      ),
-
-      // BASE DETAIL PENGELUARAN
-      body: ListView(
-        physics: const NeverScrollableScrollPhysics(),
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 15),
-            child: Container(
-              color: universalColors,
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Nama / Keterangan",
-                      style: boldComponentFonts,
-                    ),
-                    Text("Cash Out", style: universalFonts),
-                  ],
+    return Column(
+      children: [
+        Column(
+          children: [
+            AppBar(
+              backgroundColor: componentColors,
+              title: Text(
+                "PENGELUARAN",
+                style: whiteTitleFonts,
+              ),
+              centerTitle: true,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 15),
+              child: Container(
+                color: universalColors,
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Nama / Keterangan",
+                        style: boldComponentFonts,
+                      ),
+                      Text("Cash Out", style: universalFonts),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
+          ],
+        ),
+        Expanded(
+          child: FutureBuilder(
+              future: newDataOutcome,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                      child: CircularProgressIndicator(color: componentColors));
+                } else if (snapshot.hasError) {
+                  return Text(
+                    "Error: ${snapshot.error}",
+                    style: universalFonts,
+                  );
+                } else if (snapshot.data!.data.isEmpty) {
+                  return emptyDataAnnounce(context);
+                } else {
+                  final getAllData = snapshot.data!;
+                  getAllData.data.sort((a, b) => b.id.compareTo(a
+                      .id)); // MENGURUTKAN DATA BERDASARKAN ID YANG PALING TERAKHIR YANG MASUK KE DATABASE
 
-          // BASE LIST DATA PENGELUARAN YANG TELAH DIINPUT
-          Container(
-              margin: const EdgeInsets.only(bottom: 15),
-              height: MediaQuery.of(context).size.height / 1.68,
-              child: FutureBuilder(
-                  future: newDataOutcome,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(
-                          child: CircularProgressIndicator(
-                              color: componentColors));
-                    } else if (snapshot.hasError) {
-                      return Text(
-                        "Error: ${snapshot.error}",
-                        style: universalFonts,
-                      );
-                    } else if (snapshot.data!.data.isEmpty) {
-                      return emptyDataAnnounce(context);
-                    } else {
-                      final getAllData = snapshot.data!;
-                      getAllData.data.sort((a, b) => b.id.compareTo(a
-                          .id)); // MENGURUTKAN DATA BERDASARKAN ID YANG PALING TERAKHIR YANG MASUK KE DATABASE
-
-                      // CONTAINER YANG BERISIKAN DATA DARI DATABASE
-                      return ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: getAllData.data.length,
-                        itemBuilder: (context, index) {
-                          final getData = getAllData.data[index];
-                          return FutureBuilder(
-                            future: totalOutcomeService
-                                .getAllDataTotalOutcomeByDecadeId(getData.id),
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                      ConnectionState.waiting ||
-                                  !snapshot.hasData) {
-                                return baseListDecadeOutcome(
-                                    getData, getAllData, index, "0");
-                              } else {
-                                final getTotalIncome = snapshot.data!;
-                                return baseListDecadeOutcome(
-                                    getData,
-                                    getAllData,
-                                    index,
-                                    "${getTotalIncome["totalPengeluaran"]}");
-                              }
-                            },
-                          );
+                  // CONTAINER YANG BERISIKAN DATA DARI DATABASE
+                  return ListView.builder(
+                    padding: EdgeInsets.zero,
+                    // shrinkWrap: true,
+                    itemCount: getAllData.data.length,
+                    itemBuilder: (context, index) {
+                      final getData = getAllData.data[index];
+                      return FutureBuilder(
+                        future: totalOutcomeService
+                            .getAllDataTotalOutcomeByDecadeId(getData.id),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                                  ConnectionState.waiting ||
+                              !snapshot.hasData) {
+                            return baseListDecadeOutcome(
+                                getData, getAllData, index, "0");
+                          } else {
+                            final getTotalIncome = snapshot.data!;
+                            return baseListDecadeOutcome(getData, getAllData,
+                                index, "${getTotalIncome["totalPengeluaran"]}");
+                          }
                         },
                       );
-                    }
-                  })),
+                    },
+                  );
+                }
+              }),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 15),
+          child: Column(
+            children: [
+              // BUTTON UNTUK MENGINPUT DATA PENGELUARAN
+              buttonDirection(
+                  "Input Decade",
+                  const InputDecadePengeluaranPage(),
+                  () => refreshData(),
+                  context),
+              const SizedBox(
+                height: 10,
+              ),
 
-          // BUTTON UNTUK MENGINPUT DATA PENGELUARAN
-          buttonDirection("Input Decade", const InputDecadePengeluaranPage(),
-              () => refreshData(), context),
-          const SizedBox(
-            height: 10,
+              // BASE TOTAL PENGELUARAN DARI SELURUH PERIODE
+              FutureBuilder(
+                future: newTotalDataOutcome,
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return Center(
+                      child: Text("Error: ${snapshot.error}"),
+                    );
+                  } else if (!snapshot.hasData) {
+                    return baseTotalOutcome(context, "--");
+                  } else {
+                    final getDataTotal = snapshot.data;
+                    return baseTotalOutcome(
+                        context, "${getDataTotal!["totalPengeluaran"]}");
+                  }
+                },
+              ),
+            ],
           ),
-
-          // BASE TOTAL PENGELUARAN DARI SELURUH PERIODE
-          FutureBuilder(
-            future: newTotalDataOutcome,
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                return Center(
-                  child: Text("Error: ${snapshot.error}"),
-                );
-              } else if (!snapshot.hasData) {
-                return baseTotalOutcome(context, "--");
-              } else {
-                final getDataTotal = snapshot.data;
-                return baseTotalOutcome(
-                    context, "${getDataTotal!["totalPengeluaran"]}");
-              }
-            },
-          ),
-        ],
-      ),
+        )
+      ],
     );
   }
 
@@ -182,22 +183,27 @@ class _OutcomePageState extends State<OutcomePage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // DECADE PENGELUARAN DATA
-                    Text(
-                      "Periode: ${getData.decade.year} / ${getData.decade.year + 1} ",
-                      style: boldComponentFonts,
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    Text(
-                      "- ${formatCurrencyString(totalPengeluaran)}",
-                      style: universalFonts,
-                    ),
-                  ],
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // DECADE PENGELUARAN DATA
+                      Text(
+                        "Periode: ${getData.decade.year} / ${getData.decade.year + 1} ",
+                        style: boldComponentFonts,
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        "- ${formatCurrencyString(totalPengeluaran)}",
+                        style: universalFonts,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  width: 15,
                 ),
                 Row(
                   children: [
@@ -240,41 +246,37 @@ class _OutcomePageState extends State<OutcomePage> {
   Align baseTotalOutcome(BuildContext context, String baseText) {
     return Align(
       alignment: Alignment.bottomCenter,
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 10),
-        child: Container(
-          height: MediaQuery.of(context).size.height / 10,
-          width: double.infinity,
-          color: componentColors,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  "Total Cash Out",
-                  style: whiteBoldComponentFonts,
-                ),
-                const SizedBox(
-                  height: 8,
-                ),
+      child: Container(
+        width: double.infinity,
+        color: componentColors,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 15),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                "Total Cash Out",
+                style: whiteBoldComponentFonts,
+              ),
+              const SizedBox(
+                height: 8,
+              ),
 
-                // CONTAINER UNTUK MENAMPILKAN TOTAL DATA PEMASUKAN
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  width: MediaQuery.of(context).size.width / 2,
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(15)),
-                  child: Center(
-                    child: Text(
-                      formatCurrencyString(baseText),
-                      style: universalFonts,
-                    ),
+              // CONTAINER UNTUK MENAMPILKAN TOTAL DATA PEMASUKAN
+              Container(
+                padding: const EdgeInsets.all(8),
+                width: MediaQuery.of(context).size.width / 2,
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(15)),
+                child: Center(
+                  child: Text(
+                    formatCurrencyString(baseText),
+                    style: universalFonts,
                   ),
-                )
-              ],
-            ),
+                ),
+              )
+            ],
           ),
         ),
       ),

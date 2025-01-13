@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:pppl_apps/constant/app_color.dart';
 import 'package:pppl_apps/constant/app_font.dart';
 import 'package:pppl_apps/constant/list_rekapitulasi.dart';
@@ -14,6 +15,7 @@ class ListRekapitulasiUI extends StatefulWidget {
 class _ListRekapitulasiUIState extends State<ListRekapitulasiUI> {
   late PageController pageController;
   int viewIndex = 0;
+
   List listRekap = [
     "Rekapitulasi Lembaga",
     "Rekapitulasi Siswa",
@@ -28,10 +30,11 @@ class _ListRekapitulasiUIState extends State<ListRekapitulasiUI> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.all(15),
-        child: Column(children: [
-          Row(
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20),
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: List.generate(3, (index) {
               return Padding(
@@ -46,61 +49,48 @@ class _ListRekapitulasiUIState extends State<ListRekapitulasiUI> {
               );
             }),
           ),
-
-          const SizedBox(
-            height: 10,
-          ),
-
-          // BASE REKAPITULASI
-          SizedBox(
-            height: MediaQuery.of(context).size.width * 1.8,
-            child: PageView.builder(
-              controller: pageController,
-              itemCount: listRekap.length,
-              itemBuilder: (_, index) {
-                // MENDAPATKAN DATA JENIS REKAP BERDASARKAN INDEX
-                dynamic getListRekap = listRekap[index];
-                return Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Column(
-                    children: [
-                      // HEADER ITEM REKAPITULASI
-                      Stack(
-                        children: [
-                          Container(
-                            height: MediaQuery.of(context).size.height / 10,
-                            decoration: const BoxDecoration(
-                              color: componentColors,
+        ),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          height: MediaQuery.of(context).size.longestSide * 1.1,
+          child: PageView.builder(
+            controller: pageController,
+            itemCount: listRekap.length,
+            itemBuilder: (_, index) {
+              // MENDAPATKAN DATA JENIS REKAP BERDASARKAN INDEX
+              dynamic getListRekap = listRekap[index];
+              return Container(
+                margin: const EdgeInsets.symmetric(horizontal: 10),
+                child: Column(
+                  children: [
+                    // HEADER ITEM REKAPITULASI
+                    Container(
+                        height: MediaQuery.of(context).size.width / 4,
+                        decoration: const BoxDecoration(
+                            color: componentColors,
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.elliptical(25, 20))),
+                        child: Container(
+                          margin: const EdgeInsets.only(top: 4, left: 4),
+                          decoration: const BoxDecoration(
+                              color: Colors.white,
                               borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(20)),
+                                  topLeft: Radius.circular(20))),
+                          child: Center(
+                              child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 20),
+                            child: Text(
+                              getListRekap,
+                              style: titleFonts,
                             ),
-                          ),
-                          Positioned(
-                            bottom: 0,
-                            right: 0,
-                            child: Container(
-                              height: MediaQuery.of(context).size.height / 10.3,
-                              width: MediaQuery.of(context).size.width / 1.123,
-                              decoration: const BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(17))),
-                              child: Center(
-                                  child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 20),
-                                child: Text(
-                                  getListRekap,
-                                  style: titleFonts,
-                                ),
-                              )),
-                            ),
-                          ),
-                        ],
-                      ),
+                          )),
+                        )),
 
-                      // MENAMPILKAN SELURUH DATA REKAP BERDASARKAN JENIS REKAPAN
-                      ListView.builder(
+                    // MENAMPILKAN SELURUH DATA REKAP BERDASARKAN JENIS REKAPAN
+                    Expanded(
+                      child: ListView.builder(
+                        padding: EdgeInsets.zero,
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: viewIndex == 0
@@ -129,18 +119,21 @@ class _ListRekapitulasiUIState extends State<ListRekapitulasiUI> {
                           }
                         },
                       ),
-                    ],
-                  ),
-                );
-              },
-              onPageChanged: (value) {
-                setState(() {
-                  viewIndex = value;
-                });
-              },
-            ),
+                    ),
+                  ],
+                ),
+              );
+            },
+            onPageChanged: (value) {
+              setState(() {
+                viewIndex = value;
+              });
+            },
           ),
-        ]));
+        )
+      ],
+    );
+    // BASE REKAPITULASI
   }
 
   // LIST DATA REKAP BERDASARKAN JENIS REKAPAN

@@ -79,7 +79,7 @@ class _CashOutPageState extends State<CashOutPage> {
         iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(30),
+        padding: const EdgeInsets.all(20),
 
         // BASE CONTAINER INPUT PENGELUARAN
         child: Column(
@@ -251,7 +251,7 @@ class _CashOutPageState extends State<CashOutPage> {
                           children: [
                             Padding(
                               padding: const EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 26),
+                                  vertical: 10, horizontal: 20),
                               child: Center(
                                   child: Text(
                                 "Tanggal",
@@ -296,79 +296,83 @@ class _CashOutPageState extends State<CashOutPage> {
                     ),
 
                     // BUTTON SIMPAN DATA
-                    GestureDetector(
-                      child: Align(
+                    Align(
                         alignment: Alignment.bottomCenter,
-                        child: Container(
-                          height: MediaQuery.of(context).size.width / 8,
-                          width: MediaQuery.of(context).size.width / 3.5,
-                          decoration: BoxDecoration(
-                              color: componentColors,
-                              borderRadius: BorderRadius.circular(20)),
-                          child: Center(
-                              child: Text(
-                            "SAVE",
-                            style: whiteBoldComponentFonts,
-                          )),
-                        ),
-                      ),
-                      onTap: () async {
-                        if (selectedItem == null || selectedItem!.isEmpty) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              backgroundColor: Colors.red,
-                              content: Text(
-                                "HARAP MENGISI JENIS PENGELUARAN",
-                                style: boldComponentFonts,
+                        child: Padding(
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: GestureDetector(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: componentColors,
+                                    borderRadius: BorderRadius.circular(15)),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 30),
+                                  child: Text(
+                                    "SAVE",
+                                    style: whiteBoldComponentFonts,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
                               ),
-                              duration: const Duration(seconds: 3),
-                            ),
-                          );
-                          return;
-                        }
-                        if (hintTanggal == "--") {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              backgroundColor: Colors.red,
-                              content: Text(
-                                "HARAP MENGISI PERIODE PENGELUARAN",
-                                style: boldComponentFonts,
-                              ),
-                              duration: const Duration(seconds: 3),
-                            ),
-                          );
-                          return;
-                        }
-                        try {
-                          // MELAKUKAN KONVERSI TERHADAP DATA DANA BOS YANG AWALNYA STRING MENJADI INTEGER
-                          int konversiPengeluaran =
-                              pengeluaranController.text.isNotEmpty
-                                  ? int.parse(pengeluaranController.text
-                                      .replaceAll('.', ''))
-                                  : 0;
+                              onTap: () async {
+                                if (selectedItem == null ||
+                                    selectedItem!.isEmpty) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      backgroundColor: Colors.red,
+                                      content: Text(
+                                        "HARAP MENGISI JENIS PENGELUARAN",
+                                        style: boldComponentFonts,
+                                      ),
+                                      duration: const Duration(seconds: 3),
+                                    ),
+                                  );
+                                  return;
+                                }
+                                if (hintTanggal == "--") {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      backgroundColor: Colors.red,
+                                      content: Text(
+                                        "HARAP MENGISI PERIODE PENGELUARAN",
+                                        style: boldComponentFonts,
+                                      ),
+                                      duration: const Duration(seconds: 3),
+                                    ),
+                                  );
+                                  return;
+                                }
+                                try {
+                                  // MELAKUKAN KONVERSI TERHADAP DATA DANA BOS YANG AWALNYA STRING MENJADI INTEGER
+                                  int konversiPengeluaran =
+                                      pengeluaranController.text.isNotEmpty
+                                          ? int.parse(pengeluaranController.text
+                                              .replaceAll('.', ''))
+                                          : 0;
 
-                          await OutcomeServices().addNewDataOutcome(
-                              widget.decadeId,
-                              selectedItem!,
-                              konversiPengeluaran);
+                                  await OutcomeServices().addNewDataOutcome(
+                                      widget.decadeId,
+                                      selectedItem!,
+                                      konversiPengeluaran);
 
-                          Get.back(result: true);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              backgroundColor: universalColors,
-                              content: Text(
-                                "DATA BERHASIL DITAMBAHKAN",
-                                style: boldComponentFonts,
-                              ),
-                              duration: const Duration(seconds: 3),
-                            ),
-                          );
-                        } catch (e, stackTrace) {
-                          print("Error: $e");
-                          print("Stack Trace: $stackTrace");
-                        }
-                      },
-                    )
+                                  Get.back(result: true);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      backgroundColor: universalColors,
+                                      content: Text(
+                                        "DATA BERHASIL DITAMBAHKAN",
+                                        style: boldComponentFonts,
+                                      ),
+                                      duration: const Duration(seconds: 3),
+                                    ),
+                                  );
+                                } catch (e, stackTrace) {
+                                  print("Error: $e");
+                                  print("Stack Trace: $stackTrace");
+                                }
+                              },
+                            )))
                   ],
                 ),
               ),

@@ -57,8 +57,8 @@ class _IncomePageState extends State<IncomePage> {
       ),
 
       // BASE DETAIL PEMASUKAN
-      body: ListView(
-        physics: const NeverScrollableScrollPhysics(),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 15),
@@ -82,81 +82,86 @@ class _IncomePageState extends State<IncomePage> {
           ),
 
           // BASE LIST DATA PEMASUKAN YANG TELAH DIINPUT
-          Container(
-              margin: const EdgeInsets.only(bottom: 15),
-              height: MediaQuery.of(context).size.height / 1.68,
-              child: FutureBuilder(
-                future: newDataIncome,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                        child: CircularProgressIndicator(
-                      color: componentColors,
-                    ));
-                  } else if (snapshot.hasError) {
-                    return Text(
-                      "Error: ${snapshot.error}",
-                      style: universalFonts,
-                    );
-                  } else if (snapshot.data!.isEmpty) {
-                    return emptyDataAnnounce(context);
-                  } else {
-                    final getAllData = snapshot.data;
-                    getAllData!.sort((a, b) => b.id.compareTo(a
-                        .id)); // MENGURUTKAN DATA BERDASARKAN ID YANG PALING TERAKHIR YANG MASUK KE DATABASE
+          Expanded(
+            child: FutureBuilder(
+              future: newDataIncome,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                      child: CircularProgressIndicator(
+                    color: componentColors,
+                  ));
+                } else if (snapshot.hasError) {
+                  return Text(
+                    "Error: ${snapshot.error}",
+                    style: universalFonts,
+                  );
+                } else if (snapshot.data!.isEmpty) {
+                  return emptyDataAnnounce(context);
+                } else {
+                  final getAllData = snapshot.data;
+                  getAllData!.sort((a, b) => b.id.compareTo(a
+                      .id)); // MENGURUTKAN DATA BERDASARKAN ID YANG PALING TERAKHIR YANG MASUK KE DATABASE
 
-                    // CONTAINER YANG BERISIKAN DATA DARI DATABASE
-                    return ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: getAllData.length,
-                        itemBuilder: (context, index) {
-                          final getData = getAllData[index];
-                          return FutureBuilder(
-                            future: totalIncomeService
-                                .getAllDataTotalIncomeByDecadeID(getData.id),
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                      ConnectionState.waiting ||
-                                  !snapshot.hasData) {
-                                return baseListIncome(getData, "0", "0");
-                              } else {
-                                final getTotalIncome = snapshot.data;
-                                return baseListIncome(
-                                    getData,
-                                    "${getTotalIncome!["totalPemasukan"]}",
-                                    getTotalIncome);
-                              }
-                            },
-                          );
-                        });
-                  }
-                },
-              )),
-
-          // TOMBOL CASH IN UNTUK MENGINPUT DATA BARU
-          buttonDirection(
-              "Cash In", const CashInPage(), () => refreshData(), context),
-          const SizedBox(
-            height: 10,
+                  // CONTAINER YANG BERISIKAN DATA DARI DATABASE
+                  return ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: getAllData.length,
+                      itemBuilder: (context, index) {
+                        final getData = getAllData[index];
+                        return FutureBuilder(
+                          future: totalIncomeService
+                              .getAllDataTotalIncomeByDecadeID(getData.id),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                    ConnectionState.waiting ||
+                                !snapshot.hasData) {
+                              return baseListIncome(getData, "0", "0");
+                            } else {
+                              final getTotalIncome = snapshot.data;
+                              return baseListIncome(
+                                  getData,
+                                  "${getTotalIncome!["totalPemasukan"]}",
+                                  getTotalIncome);
+                            }
+                          },
+                        );
+                      });
+                }
+              },
+            ),
           ),
+          Padding(
+            padding: const EdgeInsets.only(top: 15),
+            child: Column(
+              children: [
+                // TOMBOL CASH IN UNTUK MENGINPUT DATA BARU
+                buttonDirection("Cash In", const CashInPage(),
+                    () => refreshData(), context),
+                const SizedBox(
+                  height: 10,
+                ),
 
-          // BASE TOTAL PEMASUKAN DARI SELURUH PERIODE
-          FutureBuilder(
-            future: newTotalDataIncome,
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                return Center(
-                  child: Text("Error: ${snapshot.error}"),
-                );
-              } else if (!snapshot.hasData) {
-                return baseTotalIncome(context, "--");
-              } else {
-                final getDataTotal = snapshot.data;
-                return baseTotalIncome(
-                    context, "${getDataTotal!["totalPemasukan"]}");
-              }
-            },
-          ),
+                // BASE TOTAL PEMASUKAN DARI SELURUH PERIODE
+                FutureBuilder(
+                  future: newTotalDataIncome,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) {
+                      return Center(
+                        child: Text("Error: ${snapshot.error}"),
+                      );
+                    } else if (!snapshot.hasData) {
+                      return baseTotalIncome(context, "--");
+                    } else {
+                      final getDataTotal = snapshot.data;
+                      return baseTotalIncome(
+                          context, "${getDataTotal!["totalPemasukan"]}");
+                    }
+                  },
+                ),
+              ],
+            ),
+          )
         ],
       ),
     );
@@ -175,26 +180,30 @@ class _IncomePageState extends State<IncomePage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // MENAMPILKAN PERIODE DATA PEMASUKAN
-                    Text(
-                      "Periode: ${getData.tanggalPemasukan.year} / ${getData.tanggalPemasukan.year + 1}",
-                      style: boldComponentFonts,
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // MENAMPILKAN PERIODE DATA PEMASUKAN
+                      Text(
+                        "Periode: ${getData.tanggalPemasukan.year} / ${getData.tanggalPemasukan.year + 1}",
+                        style: boldComponentFonts,
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
 
-                    // MENAMPILKAN TOTAL PEMASUKAN YANG DITERIMA DALAM 1 PERIODE
-                    Text(
-                      "+ ${formatCurrencyString(totalPemasukan)}",
-                      style: universalFonts,
-                    ),
-                  ],
+                      // MENAMPILKAN TOTAL PEMASUKAN YANG DITERIMA DALAM 1 PERIODE
+                      Text(
+                        "+ ${formatCurrencyString(totalPemasukan)}",
+                        style: universalFonts,
+                      ),
+                    ],
+                  ),
                 ),
-
+                const SizedBox(
+                  width: 15,
+                ),
                 // ICON EDIT DAN DELETE DATA PEMASUKAN
                 Row(
                   children: [
@@ -251,41 +260,37 @@ class _IncomePageState extends State<IncomePage> {
   Align baseTotalIncome(BuildContext context, String baseText) {
     return Align(
       alignment: Alignment.bottomCenter,
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 10),
-        child: Container(
-          height: MediaQuery.of(context).size.height / 10,
-          width: double.infinity,
-          color: componentColors,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  "Total Cash In",
-                  style: whiteBoldComponentFonts,
-                ),
-                const SizedBox(
-                  height: 8,
-                ),
+      child: Container(
+        width: double.infinity,
+        color: componentColors,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 15),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                "Total Cash In",
+                style: whiteBoldComponentFonts,
+              ),
+              const SizedBox(
+                height: 8,
+              ),
 
-                // CONTAINER UNTUK MENAMPILKAN TOTAL DATA PEMASUKAN
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  width: MediaQuery.of(context).size.width / 2,
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(15)),
-                  child: Center(
-                    child: Text(
-                      formatCurrencyString(baseText),
-                      style: universalFonts,
-                    ),
+              // CONTAINER UNTUK MENAMPILKAN TOTAL DATA PEMASUKAN
+              Container(
+                padding: const EdgeInsets.all(8),
+                width: MediaQuery.of(context).size.width / 2,
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(15)),
+                child: Center(
+                  child: Text(
+                    formatCurrencyString(baseText),
+                    style: universalFonts,
                   ),
-                )
-              ],
-            ),
+                ),
+              )
+            ],
           ),
         ),
       ),

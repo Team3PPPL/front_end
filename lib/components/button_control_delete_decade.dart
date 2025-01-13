@@ -23,13 +23,12 @@ buttonControlDeleteDecade(iconButton, Function apiMethod, String decade,
       ),
     ),
     onTap: () async {
-      // MENAMPILKAN ALERT DIALOG BERNUANSA IOS
-      return showCupertinoDialog(
+      // MENAMPILKAN ALERT DIALOG BERNUANSA
+      return showDialog(
           barrierDismissible: false,
           context: context,
           builder: (context) {
-            return CupertinoAlertDialog(
-              // BAGIAN ATAS ALERT DIALOG
+            return AlertDialog(
               title: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -44,37 +43,31 @@ buttonControlDeleteDecade(iconButton, Function apiMethod, String decade,
                   Text(
                     "Apakah Anda Yakin ?",
                     style: titleFonts,
-                  )
-                ],
-              ),
-
-              // ISI DARI ALERT DIALOG
-              content: Column(
-                children: [
+                  ),
                   const Divider(
                     color: Colors.black,
                   ),
-                  Text(
-                    "Apakah anda ingin menghapus seluruh data pada periode: $decade dari database?",
-                    style: universalFonts,
-                  ),
                 ],
               ),
-
-              // OPSI PADA ALERT DIALOG
+              content: RichText(
+                text: TextSpan(
+                    text:
+                        "Apakah anda ingin menghapus seluruh data pada periode: ",
+                    style: universalFonts,
+                    children: [
+                      TextSpan(text: decade, style: boldUniversalFonts),
+                      TextSpan(text: " dari database?", style: universalFonts)
+                    ]),
+                textAlign: TextAlign.center,
+              ),
               actions: [
-                CupertinoDialogAction(
-                  child: Text(
-                    selectionColor: Colors.red,
-                    "TIDAK",
-                    style: boldComponentFonts,
-                  ),
-                  onPressed: () {
-                    Get.back();
-                  },
-                ),
-                CupertinoDialogAction(
-                  child: Text("YA", style: boldComponentFonts),
+                MaterialButton(
+                    child: Text("TIDAK", style: redBoldComponentFonts),
+                    onPressed: () {
+                      Get.back();
+                    }),
+                MaterialButton(
+                  child: Text("YA", style: greenBoldComponentFonts),
                   onPressed: () async {
                     await apiMethod();
                     refreshData();
@@ -90,9 +83,74 @@ buttonControlDeleteDecade(iconButton, Function apiMethod, String decade,
                       ),
                     );
                   },
-                )
+                ),
               ],
             );
+            // return CupertinoAlertDialog(
+            //   // BAGIAN ATAS ALERT DIALOG
+            //   title: Column(
+            //     mainAxisAlignment: MainAxisAlignment.center,
+            //     children: [
+            //       const Icon(
+            //         CupertinoIcons.exclamationmark_circle,
+            //         color: Colors.red,
+            //         size: 70,
+            //       ),
+            //       const SizedBox(
+            //         height: 10,
+            //       ),
+            //       Text(
+            //         "Apakah Anda Yakin ?",
+            //         style: titleFonts,
+            //       )
+            //     ],
+            //   ),
+
+            //   // ISI DARI ALERT DIALOG
+            //   content: Column(
+            //     children: [
+            //       const Divider(
+            //         color: Colors.black,
+            //       ),
+            //       Text(
+            //         "Apakah anda ingin menghapus seluruh data pada periode: $decade dari database?",
+            //         style: universalFonts,
+            //       ),
+            //     ],
+            //   ),
+
+            //   // OPSI PADA ALERT DIALOG
+            //   actions: [
+            //     CupertinoDialogAction(
+            //       child: Text(
+            //         selectionColor: Colors.red,
+            //         "TIDAK",
+            //         style: boldComponentFonts,
+            //       ),
+            //       onPressed: () {
+            //         Get.back();
+            //       },
+            //     ),
+            //     CupertinoDialogAction(
+            //       child: Text("YA", style: boldComponentFonts),
+            //       onPressed: () async {
+            //         await apiMethod();
+            //         refreshData();
+            //         Get.back();
+            //         ScaffoldMessenger.of(context).showSnackBar(
+            //           SnackBar(
+            //             backgroundColor: universalColors,
+            //             content: Text(
+            //               "DATA PERIODE $decade BERHASIL DIHAPUS",
+            //               style: boldComponentFonts,
+            //             ),
+            //             duration: const Duration(seconds: 3),
+            //           ),
+            //         );
+            //       },
+            //     )
+            //   ],
+            // );
           });
     },
   );

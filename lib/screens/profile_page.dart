@@ -9,43 +9,32 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: componentColors,
-        toolbarHeight: 0,
-      ),
-      body: ListView(
-        children: [
-          Container(
-            color: componentColors,
-            child: Container(
-              margin: const EdgeInsets.all(15),
+    return ListView(
+      padding: EdgeInsets.zero,
+      children: [
+        Container(
+          color: componentColors,
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 15),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 40, bottom: 15),
               child: Column(
                 children: [
-                  Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 15),
-                      child:
-                          // LOGO MITRA
-                          AspectRatio(
-                              aspectRatio: 16 / 5.5,
-                              child: Image.asset(
-                                "assets/logo.png",
-                                fit: BoxFit.contain,
-                              ))),
-
-                  // NAMA MITRA
+                  Align(
+                    alignment: Alignment.topCenter,
+                    child: Image.asset(
+                      "assets/logo.png",
+                      height: MediaQuery.of(context).size.width / 2.5,
+                      width: MediaQuery.of(context).size.width / 2.5,
+                    ),
+                  ),
+                  const SizedBox(height: 15),
                   Text(
                     "Tansyitul Muta'allimin",
                     style: whiteTitleFonts,
                     textAlign: TextAlign.center,
                   ),
-                  const Divider(
-                    color: Colors.white,
-                    thickness: 2,
-                  ),
-
-                  // DESKRIPSI SINGKAT MITRA
+                  const Divider(color: Colors.white, thickness: 2),
                   Text(
                     aboutUs,
                     style: whiteUniversalFonts,
@@ -55,11 +44,9 @@ class ProfilePage extends StatelessWidget {
               ),
             ),
           ),
-
-          // UI REKAPITULASI MITRA
-          const ListRekapitulasiUI(),
-        ],
-      ),
+        ),
+        const ListRekapitulasiUI(),
+      ],
     );
   }
 }

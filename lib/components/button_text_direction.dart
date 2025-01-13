@@ -7,25 +7,29 @@ buttonDirection(
     String jenisButton, dynamic direction, Function refreshData, context) {
   return Align(
     alignment: Alignment.bottomCenter,
-    child: GestureDetector(
-      child: Container(
-        height: MediaQuery.of(context).size.width / 8,
-        width: MediaQuery.of(context).size.width / 3.5,
-        decoration: BoxDecoration(
-            color: componentColors, borderRadius: BorderRadius.circular(20)),
-        child: Center(
-            child: Text(
-          jenisButton,
-          style: whiteComponentFonts,
+    child: Padding(
+        padding: const EdgeInsets.only(bottom: 10),
+        child: GestureDetector(
+          child: Container(
+            decoration: BoxDecoration(
+                color: componentColors,
+                borderRadius: BorderRadius.circular(15)),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 13, horizontal: 25),
+              child: Text(
+                jenisButton,
+                style: whiteBoldComponentFonts,
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+          onTap: () {
+            Get.to(direction)!.then((result) {
+              if (result == true) {
+                refreshData();
+              }
+            });
+          },
         )),
-      ),
-      onTap: () async {
-        Get.to(direction)!.then((result) {
-          if (result == true) {
-            refreshData();
-          }
-        });
-      },
-    ),
   );
 }

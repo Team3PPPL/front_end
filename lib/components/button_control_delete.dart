@@ -23,13 +23,12 @@ buttonControlDelete(iconButton, Function apiMethod, String jenisData,
       ),
     ),
     onTap: () async {
-      // MENAMPILKAN ALERT DIALOG BERNUANSA IOS
+      // MENAMPILKAN ALERT DIALOG
       return showCupertinoDialog(
           barrierDismissible: false,
           context: context,
           builder: (context) {
-            return CupertinoAlertDialog(
-              // BAGIAN ATAS ALERT DIALOG
+            return AlertDialog(
               title: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -44,35 +43,36 @@ buttonControlDelete(iconButton, Function apiMethod, String jenisData,
                   Text(
                     "Apakah Anda Yakin ?",
                     style: titleFonts,
-                  )
-                ],
-              ),
-
-              // ISI DARI ALERT DIALOG
-              content: Column(
-                children: [
+                  ),
                   const Divider(
                     color: Colors.black,
                   ),
-                  Text(
-                      "Apakah anda ingin menghapus data $jenisData dari database?",
-                      style: universalFonts),
                 ],
               ),
+              content: RichText(
+                text: TextSpan(
+                    text: "Apakah anda ingin menghapus data ",
+                    style: universalFonts,
+                    children: [
+                      TextSpan(text: jenisData, style: boldUniversalFonts),
+                      TextSpan(text: " dari database?", style: universalFonts)
+                    ]),
+                textAlign: TextAlign.center,
+              ),
 
-              // OPSI PADA ALERT DIALOG
+              // Text(
+              //   "Apakah anda ingin menghapus seluruh data pada periode: $jenisData dari database?",
+              //   style: universalFonts,
+              //   textAlign: TextAlign.center,
+              // ),
               actions: [
-                CupertinoDialogAction(
-                  child: Text(
-                    "TIDAK",
-                    style: boldComponentFonts,
-                  ),
-                  onPressed: () {
-                    Get.back();
-                  },
-                ),
-                CupertinoDialogAction(
-                  child: Text("YA", style: boldComponentFonts),
+                MaterialButton(
+                    child: Text("TIDAK", style: redBoldComponentFonts),
+                    onPressed: () {
+                      Get.back();
+                    }),
+                MaterialButton(
+                  child: Text("YA", style: greenBoldComponentFonts),
                   onPressed: () async {
                     await apiMethod();
                     refreshData();
@@ -81,14 +81,14 @@ buttonControlDelete(iconButton, Function apiMethod, String jenisData,
                       SnackBar(
                         backgroundColor: universalColors,
                         content: Text(
-                          "DATA ${jenisData.toUpperCase()} BERHASIL DIHAPUS",
+                          "DATA PERIODE $jenisData BERHASIL DIHAPUS",
                           style: boldComponentFonts,
                         ),
                         duration: const Duration(seconds: 3),
                       ),
                     );
                   },
-                )
+                ),
               ],
             );
           });

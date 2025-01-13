@@ -73,7 +73,7 @@ class _InputDecadePengeluaranPageState
           iconTheme: const IconThemeData(color: Colors.white),
         ),
         body: Padding(
-          padding: const EdgeInsets.all(30),
+          padding: const EdgeInsets.all(20),
 
           // BASE INPUT DECADE PENGELUARAN
           child: Column(children: [
@@ -173,60 +173,64 @@ class _InputDecadePengeluaranPageState
                       ),
 
                       // BUTTON SIMPAN DATA
-                      GestureDetector(
-                        child: Align(
+                      Align(
                           alignment: Alignment.bottomCenter,
-                          child: Container(
-                            height: MediaQuery.of(context).size.width / 8,
-                            width: MediaQuery.of(context).size.width / 3.5,
-                            decoration: BoxDecoration(
-                                color: componentColors,
-                                borderRadius: BorderRadius.circular(20)),
-                            child: Center(
-                                child: Text(
-                              "SAVE",
-                              style: whiteBoldComponentFonts,
-                            )),
-                          ),
-                        ),
-                        onTap: () async {
-                          if (hintTanggal == "--") {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                backgroundColor: Colors.red,
-                                content: Text(
-                                  "HARAP MENGISI PERIODE PENGELUARAN",
-                                  style: boldComponentFonts,
+                          child: Padding(
+                              padding: const EdgeInsets.only(bottom: 10),
+                              child: GestureDetector(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      color: componentColors,
+                                      borderRadius: BorderRadius.circular(15)),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 10, horizontal: 30),
+                                    child: Text(
+                                      "SAVE",
+                                      style: whiteBoldComponentFonts,
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
                                 ),
-                                duration: const Duration(seconds: 3),
-                              ),
-                            );
-                          }
-                          try {
-                            // MELAKUKAN KONVERSI TANGGAL DARI STRING MENJADI DATETIME
-                            DateTime konversiTanggalPemasukan =
-                                DateFormat("yyyy", "id_ID").parse(hintTanggal);
+                                onTap: () async {
+                                  if (hintTanggal == "--") {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        backgroundColor: Colors.red,
+                                        content: Text(
+                                          "HARAP MENGISI PERIODE PENGELUARAN",
+                                          style: boldComponentFonts,
+                                        ),
+                                        duration: const Duration(seconds: 3),
+                                      ),
+                                    );
+                                  }
+                                  try {
+                                    // MELAKUKAN KONVERSI TANGGAL DARI STRING MENJADI DATETIME
+                                    DateTime konversiTanggalPemasukan =
+                                        DateFormat("yyyy", "id_ID")
+                                            .parse(hintTanggal);
 
-                            await OutcomeServices()
-                                .addNewDecadeOutcome(konversiTanggalPemasukan);
+                                    await OutcomeServices().addNewDecadeOutcome(
+                                        konversiTanggalPemasukan);
 
-                            Get.back(result: true);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                backgroundColor: universalColors,
-                                content: Text(
-                                  "ANDA BERHASIL MENGINPUT DEKADE PENGELUARAN",
-                                  style: boldComponentFonts,
-                                ),
-                                duration: const Duration(seconds: 3),
-                              ),
-                            );
-                          } catch (e, stackTrace) {
-                            print("Error: $e");
-                            print("Stack Trace: $stackTrace");
-                          }
-                        },
-                      )
+                                    Get.back(result: true);
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        backgroundColor: universalColors,
+                                        content: Text(
+                                          "ANDA BERHASIL MENGINPUT DEKADE PENGELUARAN",
+                                          style: boldComponentFonts,
+                                        ),
+                                        duration: const Duration(seconds: 3),
+                                      ),
+                                    );
+                                  } catch (e, stackTrace) {
+                                    print("Error: $e");
+                                    print("Stack Trace: $stackTrace");
+                                  }
+                                },
+                              )))
                     ],
                   ),
                 ))

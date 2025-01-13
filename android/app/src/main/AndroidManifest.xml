@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.example.pppl_apps">
 <uses-permission android:name="android.permission.INTERNET" />
     <application
-        android:label="pppl_apps"
+        android:label="Tansyitul Finansial Management"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

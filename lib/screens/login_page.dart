@@ -44,7 +44,7 @@ class _LoginPageState extends State<LoginPage> {
       showDialog(
           context: context,
           builder: (context) {
-            return CupertinoAlertDialog(
+            return AlertDialog(
               title: Column(
                 children: [
                   LottieBuilder.network(
@@ -59,18 +59,15 @@ class _LoginPageState extends State<LoginPage> {
                     "Login Failed",
                     style: titleFonts,
                   ),
-                ],
-              ),
-              content: Column(
-                children: [
                   const Divider(
                     color: Colors.black,
                   ),
-                  Text(
-                    "Silahkan Masukkan username dan password dengan Benar",
-                    style: universalFonts,
-                  ),
                 ],
+              ),
+              content: Text(
+                "Silahkan Masukkan username dan password dengan Benar",
+                style: universalFonts,
+                textAlign: TextAlign.center,
               ),
             );
           });
@@ -87,109 +84,171 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: Form(
-        key: validateDataForm,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Stack(
-              children: [
-                SizedBox(
-                  height: MediaQuery.of(context).size.height / 1.95,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          toolbarHeight: 0,
+        ),
+        body: Container(
+          color: universalColors,
+          width: double.infinity,
+          child: ListView(
+            children: [
+              // BASE CONTAINER PENYAMBUT APLIKASI
+              Container(
+                decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius:
+                        BorderRadius.only(bottomLeft: Radius.circular(80))),
+                child: Padding(
+                  padding:
+                      const EdgeInsets.only(bottom: 20, left: 30, right: 30),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 20),
-                        decoration: BoxDecoration(
-                            color: universalColors,
-                            borderRadius: BorderRadius.circular(20)),
-                        child: Padding(
-                          padding: const EdgeInsets.all(20),
-                          child: Column(
-                            children: [
-                              const SizedBox(
-                                height: 90,
-                              ),
+                      // BASE WELCOME MESSAGE
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Welcome Back, ",
+                            style: GoogleFonts.lato(
+                                color: componentColors,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            "Rosniah",
+                            style: GoogleFonts.lato(
+                                color: componentColors,
+                                fontSize: 40,
+                                fontWeight: FontWeight.bold),
+                          )
+                        ],
+                      ),
 
-                              // BASE INPUT USERNAME
-                              TextFormField(
-                                controller: usernameController,
-                                keyboardType: TextInputType.emailAddress,
-                                style: universalFonts,
-                                decoration: InputDecoration(
-                                    hintText: 'username',
-                                    hintStyle: GoogleFonts.lato(
-                                        fontSize: 15, color: Colors.grey),
-                                    prefixIcon: const Icon(
-                                        CupertinoIcons.person_crop_circle),
-                                    prefixIconColor: Colors.grey,
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(13),
-                                    )),
-                                autovalidateMode:
-                                    AutovalidateMode.onUserInteraction,
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return 'Harap mengisikan username';
-                                  }
-                                  RegExp emailFormat = RegExp(
-                                      r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-                                  if (emailFormat.hasMatch(value)) {
-                                    return null;
-                                  }
-                                  return 'Harap masukkan e-mail sesuai format';
-                                },
-                              ),
-                              const SizedBox(
-                                height: 20,
-                              ),
+                      // LOGO APLIKASI
+                      Image.asset(
+                        "assets/logo.png",
+                        height: MediaQuery.of(context).size.width / 4,
+                        width: MediaQuery.of(context).size.width / 4,
+                      )
+                    ],
+                  ),
+                ),
+              ),
 
-                              // BASE INPUT PASSWORD
-                              TextFormField(
-                                controller: passController,
-                                obscureText: visibilityButton,
-                                style: universalFonts,
-                                decoration: InputDecoration(
-                                    hintText: 'password',
-                                    hintStyle: GoogleFonts.lato(
-                                        fontSize: 15, color: Colors.grey),
-                                    prefixIcon: const Icon(Icons.lock),
-                                    prefixIconColor: Colors.grey,
-                                    suffixIcon: GestureDetector(
-                                      child: visibilityButton == true
-                                          ? const Icon(Icons.visibility_off)
-                                          : const Icon(Icons.visibility),
-                                      onTap: () {
-                                        visibilityPass();
-                                      },
-                                    ),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(13),
-                                    )),
-                                autovalidateMode:
-                                    AutovalidateMode.onUserInteraction,
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return "Harap mengisikan password";
-                                  }
+              // BASE CONTAINER LOGIN FORM
+              Container(
+                color: Colors.white,
+                child: Container(
+                  decoration: const BoxDecoration(
+                      color: universalColors,
+                      borderRadius:
+                          BorderRadius.only(topRight: Radius.circular(80))),
+                  child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 20, horizontal: 25),
+                      child: Form(
+                        key: validateDataForm,
+                        child: Column(
+                          children: [
+                            // NAMA APLIKASI
+                            Text(
+                              "TANSYITUL FINANSIAL MANAGEMENT",
+                              style: GoogleFonts.lato(
+                                  color: componentColors,
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.center,
+                            ),
+                            const Divider(
+                              color: componentColors,
+                              thickness: 2,
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+
+                            // BASE FORM USERNAME
+                            TextFormField(
+                              controller: usernameController,
+                              keyboardType: TextInputType.emailAddress,
+                              style: universalFonts,
+                              decoration: InputDecoration(
+                                  hintText: 'username',
+                                  hintStyle: GoogleFonts.lato(
+                                      fontSize: 15, color: Colors.grey),
+                                  prefixIcon: const Icon(
+                                      CupertinoIcons.person_crop_circle),
+                                  prefixIconColor: Colors.grey,
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(13),
+                                  )),
+                              autovalidateMode:
+                                  AutovalidateMode.onUserInteraction,
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Harap mengisikan username';
+                                }
+                                RegExp emailFormat =
+                                    RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+                                if (emailFormat.hasMatch(value)) {
                                   return null;
-                                },
-                              ),
-                              const SizedBox(
-                                height: 50,
-                              ),
+                                }
+                                return 'Harap masukkan e-mail sesuai format';
+                              },
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
 
-                              // BUTTON LOGIN
-                              GestureDetector(
+                            // BASE FORM PASSWORD
+                            TextFormField(
+                              controller: passController,
+                              obscureText: visibilityButton,
+                              style: universalFonts,
+                              decoration: InputDecoration(
+                                  hintText: 'password',
+                                  hintStyle: GoogleFonts.lato(
+                                      fontSize: 15, color: Colors.grey),
+                                  prefixIcon: const Icon(Icons.lock),
+                                  prefixIconColor: Colors.grey,
+                                  suffixIcon: GestureDetector(
+                                    child: visibilityButton == true
+                                        ? const Icon(Icons.visibility_off)
+                                        : const Icon(Icons.visibility),
+                                    onTap: () {
+                                      visibilityPass();
+                                    },
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(13),
+                                  )),
+                              autovalidateMode:
+                                  AutovalidateMode.onUserInteraction,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Harap mengisikan password";
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(
+                              height: 70,
+                            ),
+
+                            // BUTTON LOGIN
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 10),
+                              child: GestureDetector(
                                 child: Container(
                                   decoration: BoxDecoration(
                                       color: componentColors,
                                       borderRadius: BorderRadius.circular(10)),
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 50),
+                                        vertical: 10, horizontal: 35),
                                     child: Text(
                                       "LOGIN",
                                       style: whiteBoldComponentFonts,
@@ -200,23 +259,15 @@ class _LoginPageState extends State<LoginPage> {
                                 onTap: () {
                                   validateSubmitForm();
                                 },
-                              )
-                            ],
-                          ),
+                              ),
+                            )
+                          ],
                         ),
-                      ),
-                    ],
-                  ),
+                      )),
                 ),
-
-                // LOGO APLIKASI PADA BAGIAN ATAS
-                AspectRatio(
-                    aspectRatio: 16 / 6, child: Image.asset("assets/logo.png"))
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
+              )
+            ],
+          ),
+        ));
   }
 }

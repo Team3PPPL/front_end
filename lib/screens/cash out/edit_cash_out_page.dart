@@ -86,6 +86,8 @@ class _EditCashOutPageState extends State<EditCashOutPage> {
   @override
   Widget build(BuildContext context) {
     Intl.defaultLocale = 'id';
+    // MEMBERIKAN UKURAN DEFAULT YANG PASTI
+    double widthDivider = MediaQuery.of(context).size.width / 25;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -105,7 +107,7 @@ class _EditCashOutPageState extends State<EditCashOutPage> {
         iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(30),
+        padding: const EdgeInsets.all(20),
 
         // BASE CONTAINER INPUT PENGELUARAN
         child: Column(
@@ -179,8 +181,8 @@ class _EditCashOutPageState extends State<EditCashOutPage> {
                         child: Row(
                           children: [
                             Container(
-                              margin: const EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 21),
+                              margin: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: widthDivider),
                               child: Center(
                                   child: Text(
                                 "Cash Out",
@@ -248,7 +250,7 @@ class _EditCashOutPageState extends State<EditCashOutPage> {
                           children: [
                             Container(
                               margin: const EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 26),
+                                  vertical: 10, horizontal: 20),
                               child: Center(
                                   child: Text(
                                 "Tanggal",
@@ -293,55 +295,62 @@ class _EditCashOutPageState extends State<EditCashOutPage> {
                     ),
 
                     // BUTTON SIMPAN DATA
-                    GestureDetector(
-                      child: Align(
+                    Align(
                         alignment: Alignment.bottomCenter,
-                        child: Container(
-                          height: MediaQuery.of(context).size.width / 8,
-                          width: MediaQuery.of(context).size.width / 3.5,
-                          decoration: BoxDecoration(
-                              color: componentColors,
-                              borderRadius: BorderRadius.circular(20)),
-                          child: Center(
-                              child: Text(
-                            "SAVE",
-                            style: whiteBoldComponentFonts,
-                          )),
-                        ),
-                      ),
-                      onTap: () async {
-                        print("DECADE ID: ${widget.dataModel.id}");
-                        print(
-                            "Jenis pengeluaran: ${widget.dataModel.cashouts[widget.index].jenisPengeluaran}");
-                        print(pengeluaranController.text);
-                        try {
-                          // MELAKUKAN KONVERSI TERHADAP DATA DANA BOS YANG AWALNYA STRING MENJADI INTEGER
-                          int konversiPengeluaran = int.parse(
-                              pengeluaranController.text.replaceAll('.', ''));
-
-                          await OutcomeServices().updateDataPengeluaranInDecade(
-                              widget.dataModel.id,
-                              widget.dataModel.cashouts[widget.index]
-                                  .jenisPengeluaran,
-                              konversiPengeluaran);
-
-                          Get.back(result: true);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              backgroundColor: universalColors,
-                              content: Text(
-                                "DATA BERHASIL DITAMBAHKAN",
-                                style: boldComponentFonts,
+                        child: Padding(
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: GestureDetector(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: componentColors,
+                                    borderRadius: BorderRadius.circular(15)),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 30),
+                                  child: Text(
+                                    "SAVE",
+                                    style: whiteBoldComponentFonts,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
                               ),
-                              duration: const Duration(seconds: 3),
-                            ),
-                          );
-                        } catch (e, stackTrace) {
-                          print("Error: $e");
-                          print("Stack Trace: $stackTrace");
-                        }
-                      },
-                    )
+                              onTap: () async {
+                                print("DECADE ID: ${widget.dataModel.id}");
+                                print(
+                                    "Jenis pengeluaran: ${widget.dataModel.cashouts[widget.index].jenisPengeluaran}");
+                                print(pengeluaranController.text);
+                                try {
+                                  // MELAKUKAN KONVERSI TERHADAP DATA DANA BOS YANG AWALNYA STRING MENJADI INTEGER
+                                  int konversiPengeluaran = int.parse(
+                                      pengeluaranController.text
+                                          .replaceAll('.', ''));
+
+                                  await OutcomeServices()
+                                      .updateDataPengeluaranInDecade(
+                                          widget.dataModel.id,
+                                          widget
+                                              .dataModel
+                                              .cashouts[widget.index]
+                                              .jenisPengeluaran,
+                                          konversiPengeluaran);
+
+                                  Get.back(result: true);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      backgroundColor: universalColors,
+                                      content: Text(
+                                        "DATA BERHASIL DITAMBAHKAN",
+                                        style: boldComponentFonts,
+                                      ),
+                                      duration: const Duration(seconds: 3),
+                                    ),
+                                  );
+                                } catch (e, stackTrace) {
+                                  print("Error: $e");
+                                  print("Stack Trace: $stackTrace");
+                                }
+                              },
+                            )))
                   ],
                 ),
               ),

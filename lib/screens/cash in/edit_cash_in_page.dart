@@ -134,7 +134,7 @@ class _EditCashInPageState extends State<EditCashInPage> {
           iconTheme: const IconThemeData(color: Colors.white),
         ),
         body: Padding(
-          padding: const EdgeInsets.all(30),
+          padding: const EdgeInsets.all(20),
 
           // BASE CONTAINER INPUT PEMASUKAN
           child: Container(
@@ -401,108 +401,112 @@ class _EditCashInPageState extends State<EditCashInPage> {
                       ),
 
                       // BUTTON SIMPAN DATA
-                      GestureDetector(
-                        child: Align(
+                      Align(
                           alignment: Alignment.bottomCenter,
-                          child: Container(
-                            height: MediaQuery.of(context).size.width / 8,
-                            width: MediaQuery.of(context).size.width / 3.5,
-                            decoration: BoxDecoration(
-                                color: componentColors,
-                                borderRadius: BorderRadius.circular(20)),
-                            child: Center(
-                                child: Text(
-                              "SAVE",
-                              style: whiteBoldComponentFonts,
-                            )),
-                          ),
-                        ),
-                        onTap: () async {
-                          if (hintTanggal == "--") {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                backgroundColor: Colors.red,
-                                content: Text(
-                                  "HARAP MENGISI PERIODE PEMASUKAN",
-                                  style: boldComponentFonts,
+                          child: Padding(
+                              padding: const EdgeInsets.only(bottom: 10),
+                              child: GestureDetector(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      color: componentColors,
+                                      borderRadius: BorderRadius.circular(15)),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 10, horizontal: 30),
+                                    child: Text(
+                                      "SAVE",
+                                      style: whiteBoldComponentFonts,
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
                                 ),
-                                duration: const Duration(seconds: 3),
-                              ),
-                            );
-                          }
-                          try {
-                            // MELAKUKAN KONVERSI TERHADAP DATA DANA BOS YANG AWALNYA STRING MENJADI INTEGER
-                            int konversiDanaBos = danaBosController
-                                    .text.isNotEmpty
-                                ? int.parse(
-                                    danaBosController.text.replaceAll('.', ''))
-                                : 0;
+                                onTap: () async {
+                                  if (hintTanggal == "--") {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        backgroundColor: Colors.red,
+                                        content: Text(
+                                          "HARAP MENGISI PERIODE PEMASUKAN",
+                                          style: boldComponentFonts,
+                                        ),
+                                        duration: const Duration(seconds: 3),
+                                      ),
+                                    );
+                                  }
+                                  try {
+                                    // MELAKUKAN KONVERSI TERHADAP DATA DANA BOS YANG AWALNYA STRING MENJADI INTEGER
+                                    int konversiDanaBos =
+                                        danaBosController.text.isNotEmpty
+                                            ? int.parse(danaBosController.text
+                                                .replaceAll('.', ''))
+                                            : 0;
 
-                            /*
+                                    /*
                             MELAKUKAN KONVERSI TERHADAP SELURUH DATA KELAS YANG AWALNYA STRING MENJADI INTEGER
                             MENYIMPANNYA KE DALAM BENTUK LIST
                             */
-                            List<int> getKonversiKelas =
-                                inputUser.map((controller) {
-                              if (controller.text.isNotEmpty) {
-                                return int.parse(
-                                    controller.text.replaceAll('.', ''));
-                              } else {
-                                return 0;
-                              }
-                            }).toList();
+                                    List<int> getKonversiKelas =
+                                        inputUser.map((controller) {
+                                      if (controller.text.isNotEmpty) {
+                                        return int.parse(controller.text
+                                            .replaceAll('.', ''));
+                                      } else {
+                                        return 0;
+                                      }
+                                    }).toList();
 
-                            // MELAKUKAN KONVERSI TANGGAL DARI STRING MENJADI DATETIME
-                            DateTime konversiTanggalPemasukan = hintTanggal
-                                    .isNotEmpty
-                                ? DateFormat("yyyy", "id_ID").parse(hintTanggal)
-                                : DateTime.now();
+                                    // MELAKUKAN KONVERSI TANGGAL DARI STRING MENJADI DATETIME
+                                    DateTime konversiTanggalPemasukan =
+                                        hintTanggal.isNotEmpty
+                                            ? DateFormat("yyyy", "id_ID")
+                                                .parse(hintTanggal)
+                                            : DateTime.now();
 
-                            print(konversiDanaBos);
-                            print(getKonversiKelas);
-                            print(konversiTanggalPemasukan);
+                                    print(konversiDanaBos);
+                                    print(getKonversiKelas);
+                                    print(konversiTanggalPemasukan);
 
-                            // MEMANGGIL METHOD updateDataPemasukan() UNTUK MEMPERBARUI DATA KE SERVER
-                            await IncomeServices().updateDataIncome(
-                              widget.pemasukanModel.id,
-                              konversiDanaBos,
-                              getKonversiKelas[0],
-                              getKonversiKelas[1],
-                              getKonversiKelas[2],
-                              getKonversiKelas[3],
-                              getKonversiKelas[4],
-                              getKonversiKelas[5],
-                              konversiTanggalPemasukan,
-                            );
+                                    // MEMANGGIL METHOD updateDataPemasukan() UNTUK MEMPERBARUI DATA KE SERVER
+                                    await IncomeServices().updateDataIncome(
+                                      widget.pemasukanModel.id,
+                                      konversiDanaBos,
+                                      getKonversiKelas[0],
+                                      getKonversiKelas[1],
+                                      getKonversiKelas[2],
+                                      getKonversiKelas[3],
+                                      getKonversiKelas[4],
+                                      getKonversiKelas[5],
+                                      konversiTanggalPemasukan,
+                                    );
 
-                            Get.back(result: true);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                backgroundColor: universalColors,
-                                content: Text(
-                                  "DATA BERHASIL DIPERBARUI",
-                                  style: boldComponentFonts,
-                                ),
-                                duration: const Duration(seconds: 3),
-                              ),
-                            );
-                          } catch (e, stackTrace) {
-                            // MENAMPILKAN PESAN KESALAHAN
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                backgroundColor: Colors.red,
-                                content: Text(
-                                  "HARAP MENGISIKAN PERIODE PEMASUKAN",
-                                  style: boldComponentFonts,
-                                ),
-                                duration: const Duration(seconds: 3),
-                              ),
-                            );
-                            print("Error: $e");
-                            print("Stack Trace: $stackTrace");
-                          }
-                        },
-                      )
+                                    Get.back(result: true);
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        backgroundColor: universalColors,
+                                        content: Text(
+                                          "DATA BERHASIL DIPERBARUI",
+                                          style: boldComponentFonts,
+                                        ),
+                                        duration: const Duration(seconds: 3),
+                                      ),
+                                    );
+                                  } catch (e, stackTrace) {
+                                    // MENAMPILKAN PESAN KESALAHAN
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        backgroundColor: Colors.red,
+                                        content: Text(
+                                          "HARAP MENGISIKAN PERIODE PEMASUKAN",
+                                          style: boldComponentFonts,
+                                        ),
+                                        duration: const Duration(seconds: 3),
+                                      ),
+                                    );
+                                    print("Error: $e");
+                                    print("Stack Trace: $stackTrace");
+                                  }
+                                },
+                              )))
                     ],
                   ),
                 ],

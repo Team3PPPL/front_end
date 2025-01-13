@@ -32,15 +32,19 @@ class _SplashScreenState extends State<SplashScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // LOGO APLIKASI
-              AspectRatio(
-                  aspectRatio: 16 / 9, child: Image.asset("assets/logo.png")),
+              Image.asset(
+                "assets/logo.png",
+                height: MediaQuery.of(context).size.width / 2,
+                width: MediaQuery.of(context).size.width / 2,
+                fit: BoxFit.cover,
+              ),
               const SizedBox(
                 height: 50,
               ),
 
-              // NAMA MITRA
+              // NAMA APLIKASI
               Text(
-                "Tansyitul Muta'allimiin",
+                "TANSYITUL FINANSIAL MANAGEMENT",
                 style: titleFonts,
                 textAlign: TextAlign.center,
               )

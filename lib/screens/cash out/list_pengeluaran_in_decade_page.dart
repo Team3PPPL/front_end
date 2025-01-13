@@ -96,8 +96,8 @@ class _ListsPengeluaranInDecadePageState
       ),
 
       // BASE LIST DATA PENGELUARAN PADA DEKADE TERTENTU
-      body: ListView(
-        physics: const NeverScrollableScrollPhysics(),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 15),
@@ -121,45 +121,44 @@ class _ListsPengeluaranInDecadePageState
           ),
 
           // BASE LIST DATA PENGELUARAN YANG TELAH DIINPUT
-          Container(
-              margin: const EdgeInsets.only(bottom: 15),
-              height: MediaQuery.of(context).size.height / 1.49,
-              child: FutureBuilder(
-                  future: newListDataOutcome,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(
-                          child: CircularProgressIndicator(
-                              color: componentColors));
-                    } else if (snapshot.hasError) {
-                      return Text(
-                        "Error: ${snapshot.error}",
-                        style: universalFonts,
-                      );
-                    } else if (snapshot.data!.cashouts.isEmpty) {
-                      return emptyDataAnnounce(context);
-                    } else {
-                      final getAllData = snapshot.data!;
+          Expanded(
+            child: FutureBuilder(
+                future: newListDataOutcome,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                        child:
+                            CircularProgressIndicator(color: componentColors));
+                  } else if (snapshot.hasError) {
+                    return Text(
+                      "Error: ${snapshot.error}",
+                      style: universalFonts,
+                    );
+                  } else if (snapshot.data!.cashouts.isEmpty) {
+                    return emptyDataAnnounce(context);
+                  } else {
+                    final getAllData = snapshot.data!;
 
-                      // CONTAINER YANG BERISIKAN DATA DARI DATABASE
-                      return ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: getAllData.cashouts.length,
-                        itemBuilder: (context, index) {
-                          final getData = getAllData.cashouts[index];
-                          return Column(
-                            children: [
-                              // BASE DARI SETIAP DATA PENGELUARAN YANG DIINPUT
-                              Container(
-                                color: universalColors,
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 8, horizontal: 15),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Column(
+                    // CONTAINER YANG BERISIKAN DATA DARI DATABASE
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: getAllData.cashouts.length,
+                      itemBuilder: (context, index) {
+                        final getData = getAllData.cashouts[index];
+                        return Column(
+                          children: [
+                            // BASE DARI SETIAP DATA PENGELUARAN YANG DIINPUT
+                            Container(
+                              color: universalColors,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 8, horizontal: 15),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(
+                                      child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
@@ -182,89 +181,102 @@ class _ListsPengeluaranInDecadePageState
                                           ),
                                         ],
                                       ),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        children: [
-                                          Text(
-                                              "- ${formatCurrencyString("${getData.totalPengeluaran}")}",
-                                              style: universalFonts),
-                                          const SizedBox(
-                                            height: 8,
-                                          ),
-                                          Row(
-                                            children: [
-                                              // BUTTON DETAIL DATA PEMASUKAN BERDASARKAN INDEX
-                                              buttonControlDirection(
-                                                  Icons.edit,
-                                                  EditCashOutPage(
-                                                    dataModel: getAllData,
-                                                    index: index,
-                                                  ),
-                                                  () => refreshData(),
-                                                  context),
+                                    ),
+                                    const SizedBox(
+                                      width: 15,
+                                    ),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      children: [
+                                        Text(
+                                            "- ${formatCurrencyString("${getData.totalPengeluaran}")}",
+                                            style: universalFonts),
+                                        const SizedBox(
+                                          height: 8,
+                                        ),
+                                        Row(
+                                          children: [
+                                            // BUTTON DETAIL DATA PEMASUKAN BERDASARKAN INDEX
+                                            buttonControlDirection(
+                                                Icons.edit,
+                                                EditCashOutPage(
+                                                  dataModel: getAllData,
+                                                  index: index,
+                                                ),
+                                                () => refreshData(),
+                                                context),
 
-                                              const SizedBox(
-                                                width: 10,
-                                              ),
+                                            const SizedBox(
+                                              width: 10,
+                                            ),
 
-                                              // BUTTON HAPUS SELURUH DATA PENGELUARAN BERDASARKAN DECADE
-                                              buttonControlDelete(
-                                                  Icons.delete_forever,
-                                                  () async => await outcomeServices
-                                                      .deleteDataOutcomeByType(
-                                                          getAllData.id,
-                                                          getData
-                                                              .jenisPengeluaran),
-                                                  getData.jenisPengeluaran,
-                                                  refreshData,
-                                                  context),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
+                                            // BUTTON HAPUS SELURUH DATA PENGELUARAN BERDASARKAN DECADE
+                                            buttonControlDelete(
+                                                Icons.delete_forever,
+                                                () async => await outcomeServices
+                                                    .deleteDataOutcomeByType(
+                                                        getAllData.id,
+                                                        getData
+                                                            .jenisPengeluaran),
+                                                getData.jenisPengeluaran,
+                                                refreshData,
+                                                context),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ],
                                 ),
                               ),
-                              const SizedBox(
-                                height: 15,
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    }
-                  })),
-
-          // BUTTON UNTUK MENGINPUT DATA PENGELUARAN
-          buttonDirection(
-              "Cash Out",
-              CashOutPage(
-                decadeId: selectedDataOutcome.id,
-              ),
-              () => refreshData(),
-              context),
-          const SizedBox(
-            height: 10,
+                            ),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  }
+                }),
           ),
 
-          // BASE TOTAL PENGELUARAN PADA PERIODE TERSEBUT
-          FutureBuilder(
-            future: newListTotalDataOutcome,
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                return Center(
-                  child: Text("Error: ${snapshot.error}"),
-                );
-              } else if (!snapshot.hasData) {
-                return baseTotalOutcome(context, "--");
-              } else {
-                final getDataTotal = snapshot.data;
-                return baseTotalOutcome(
-                    context, "${getDataTotal!["totalPengeluaran"]}");
-              }
-            },
+          Padding(
+            padding: const EdgeInsets.only(top: 15),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                // BUTTON UNTUK MENGINPUT DATA PENGELUARAN
+                buttonDirection(
+                    "Cash Out",
+                    CashOutPage(
+                      decadeId: selectedDataOutcome.id,
+                    ),
+                    () => refreshData(),
+                    context),
+                const SizedBox(
+                  height: 10,
+                ),
+
+                // BASE TOTAL PENGELUARAN PADA PERIODE TERSEBUT
+                FutureBuilder(
+                  future: newListTotalDataOutcome,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) {
+                      return Center(
+                        child: Text("Error: ${snapshot.error}"),
+                      );
+                    } else if (!snapshot.hasData) {
+                      return baseTotalOutcome(context, "--");
+                    } else {
+                      final getDataTotal = snapshot.data;
+                      return baseTotalOutcome(
+                          context, "${getDataTotal!["totalPengeluaran"]}");
+                    }
+                  },
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -275,41 +287,37 @@ class _ListsPengeluaranInDecadePageState
   Align baseTotalOutcome(BuildContext context, String baseText) {
     return Align(
       alignment: Alignment.bottomCenter,
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 10),
-        child: Container(
-          height: MediaQuery.of(context).size.height / 10,
-          width: double.infinity,
-          color: componentColors,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  "Total Cash Out",
-                  style: whiteBoldComponentFonts,
-                ),
-                const SizedBox(
-                  height: 8,
-                ),
+      child: Container(
+        width: double.infinity,
+        color: componentColors,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 15),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                "Total Cash Out",
+                style: whiteBoldComponentFonts,
+              ),
+              const SizedBox(
+                height: 8,
+              ),
 
-                // CONTAINER UNTUK MENAMPILKAN TOTAL DATA PEMASUKAN
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  width: MediaQuery.of(context).size.width / 2,
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(15)),
-                  child: Center(
-                    child: Text(
-                      formatCurrencyString(baseText),
-                      style: universalFonts,
-                    ),
+              // CONTAINER UNTUK MENAMPILKAN TOTAL DATA PEMASUKAN
+              Container(
+                padding: const EdgeInsets.all(8),
+                width: MediaQuery.of(context).size.width / 2,
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(15)),
+                child: Center(
+                  child: Text(
+                    formatCurrencyString(baseText),
+                    style: universalFonts,
                   ),
-                )
-              ],
-            ),
+                ),
+              )
+            ],
           ),
         ),
       ),
